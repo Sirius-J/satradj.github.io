@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析 | 我在万达摆地摊&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="最近在家准备写毕业论文，在家里查文献的时候特别不方便，知网的文献不能下载，只能看到摘要。但是我校购买了知网数据库，使用学校ip可以直接下载知网文献，遂上阳光服务平台准备咨询是否提供vpn连接到校内网供学生查询文献。然后突发奇想，使用python编写了个爬虫把阳光服务平台数据爬下来做数据分析。爬虫部分代码就不帖出来了，让我们一起来看下数据分析。">
+<meta name="keywords" content="数据分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析">
+<meta property="og:url" content="https://satradj.github.io/爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析/index.html">
+<meta property="og:site_name" content="我在万达摆地摊&#39;s blog">
+<meta property="og:description" content="最近在家准备写毕业论文，在家里查文献的时候特别不方便，知网的文献不能下载，只能看到摘要。但是我校购买了知网数据库，使用学校ip可以直接下载知网文献，遂上阳光服务平台准备咨询是否提供vpn连接到校内网供学生查询文献。然后突发奇想，使用python编写了个爬虫把阳光服务平台数据爬下来做数据分析。爬虫部分代码就不帖出来了，让我们一起来看下数据分析。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://satradj.github.io/爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析/1.png">
+<meta property="og:image" content="https://satradj.github.io/爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析/2.png">
+<meta property="og:image" content="https://satradj.github.io/爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析/3.png">
+<meta property="og:image" content="https://satradj.github.io/爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析/4.png">
+<meta property="og:image" content="https://satradj.github.io/爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析/5.png">
+<meta property="og:image" content="https://satradj.github.io/爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析/6.png">
+<meta property="og:image" content="https://satradj.github.io/爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析/7.png">
+<meta property="og:image" content="https://satradj.github.io/爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析/8.png">
+<meta property="og:updated_time" content="2018-02-01T05:20:48.408Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析">
+<meta name="twitter:description" content="最近在家准备写毕业论文，在家里查文献的时候特别不方便，知网的文献不能下载，只能看到摘要。但是我校购买了知网数据库，使用学校ip可以直接下载知网文献，遂上阳光服务平台准备咨询是否提供vpn连接到校内网供学生查询文献。然后突发奇想，使用python编写了个爬虫把阳光服务平台数据爬下来做数据分析。爬虫部分代码就不帖出来了，让我们一起来看下数据分析。">
+<meta name="twitter:image" content="https://satradj.github.io/爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析/1.png">
+    
+
+    
+
+    
+        <link rel="icon" href="/img/logo.jpg" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                
+                <span class="site-title">我在万达摆地摊&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/books">书单</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/img/logo.jpg" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/books">书单</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/img/logo.jpg" />
+            <h2 id="name">我在万达摆地摊</h2>
+            <h3 id="title">Java Developer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>ShangHai, China</span>
+            <a id="follow" target="_blank" href="https://github.com/satradj/">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                19
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                4
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/satradj/" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析/">
+            <time datetime="2017-12-12T11:48:52.000Z" itemprop="datePublished">2017-12-12</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/数据分析/">数据分析</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/数据分析/">数据分析</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>最近在家准备写毕业论文，在家里查文献的时候特别不方便，知网的文献不能下载，只能看到摘要。但是我校购买了知网数据库，使用学校ip可以直接下载知网文献，遂上阳光服务平台准备咨询是否提供vpn连接到校内网供学生查询文献。然后突发奇想，使用python编写了个爬虫把阳光服务平台数据爬下来做数据分析。爬虫部分代码就不帖出来了，让我们一起来看下数据分析。</p>
+<a id="more"></a>
+<p>爬虫爬取的所有数据均保存在MySQL中，首先导入必要的包。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> pymysql</span><br><span class="line"><span class="keyword">import</span> jieba</span><br></pre></td></tr></table></figure>
+<p>将数据从数据库导入进来。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">conn = pymysql.Connect(host=<span class="string">'127.0.0.1'</span>, user=<span class="string">'root'</span>, password=<span class="string">'root'</span>, port=<span class="number">3306</span>, db=<span class="string">'ygfw'</span>, charset=<span class="string">'utf8'</span>)</span><br><span class="line">df = pd.read_sql(<span class="string">'select * from qa'</span>, conn)</span><br></pre></td></tr></table></figure>
+<p>让我们看下前面5条数据。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<p><img src="1.png" alt="前五条数据"></p>
+<p>这里对字段说明下</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>标题</td>
+</tr>
+<tr>
+<td>accept</td>
+<td>受理单位</td>
+</tr>
+<tr>
+<td>type</td>
+<td>类型</td>
+</tr>
+<tr>
+<td>submit_time</td>
+<td>提交时间</td>
+</tr>
+<tr>
+<td>finish_time</td>
+<td>回复时间</td>
+</tr>
+<tr>
+<td>click_num</td>
+<td>点击次数</td>
+</tr>
+<tr>
+<td>context</td>
+<td>内容</td>
+</tr>
+<tr>
+<td>status</td>
+<td>状态</td>
+</tr>
+<tr>
+<td>replay</td>
+<td>回复</td>
+</tr>
+<tr>
+<td>url</td>
+<td>原链接地址</td>
+</tr>
+</tbody>
+</table>
+<p>首先我们看下点击率。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df.set_index(<span class="string">'submit_time'</span>)[<span class="string">'click_num'</span>].plot()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="2.png" alt="点击率"></p>
+<p>点击率最高数量的在2017年8月左右达到了6000多，<br>让我们看下点击率第一的是哪条。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(df.sort_values(by=[<span class="string">'click_num'</span>], ascending=<span class="keyword">False</span>)).head()</span><br></pre></td></tr></table></figure>
+<p><img src="3.png" alt="点击率"></p>
+<p>可以看到点记录排第一的是来自城乡资源与规划学院的一封表扬唐老师的信件，点击有6500多次。</p>
+<p>按照月份看下从14年到17年每个月提交信件的数量<br>将submit_time提取出来作为一个Series的index，将Series的值设置为1作为统计计数，然后用lambda表达式按照月份统计信件和。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">s = pd.Series(<span class="number">1</span>, index=df[<span class="string">'submit_time'</span>])</span><br><span class="line">s.groupby(<span class="keyword">lambda</span> x: x.month).sum().plot()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="4.png" alt="信件数量"></p>
+<p>可以看到在十一月份左右信件数量最多，达到了450左右，而二月份和八月份可能是由于寒暑假的原因达到了年度最低量。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s.groupby(<span class="keyword">lambda</span> x: x.year).sum().plot(kind=<span class="string">'bar'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="5.png" alt="信件数量按年"></p>
+<p>由于17年还没过完，所以17年比16年要少点。按照年份来看，阳光服务平台的信件数量呈现逐年上升趋势。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">plt.rcParams[<span class="string">'font.sans-serif'</span>] = [<span class="string">'SimHei'</span>]</span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">6</span>))</span><br><span class="line">s2 = pd.Series(<span class="number">1</span>, index=df[<span class="string">'accept'</span>])</span><br><span class="line">s2.groupby(<span class="string">'accept'</span>).sum().plot(kind=<span class="string">'bar'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="6.png" alt="信件按部门排行"></p>
+<p>其中各部门中管理处的信件是最多的，可能是大多数人不知道要发往那个部门，就往管理处投吧，233333~</p>
+<p>然后我们看下各部门对信件的处理速度吧。<br>我们将信件处理完成的时间减去提交时间得到的时间差转换成秒数，然后对各部门的时间差求平均，得到各部门处理每封信件的速度。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">df[<span class="string">'time'</span>] = df[<span class="string">'finish_time'</span>] - df[<span class="string">'submit_time'</span>]</span><br><span class="line">df[<span class="string">'time'</span>] = df[<span class="string">'time'</span>].apply(<span class="keyword">lambda</span> x: x.total_seconds())</span><br><span class="line">df[<span class="string">'num'</span>] = <span class="number">1</span></span><br><span class="line">df2 = df.set_index(<span class="string">'accept'</span>).groupby(<span class="string">'accept'</span>).sum()</span><br><span class="line">df2[<span class="string">'mean'</span>] = df2[<span class="string">'time'</span>] / df2[<span class="string">'num'</span>]</span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">10</span>))</span><br><span class="line">df2[<span class="string">'mean'</span>].plot(kind=<span class="string">'barh'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="7.png" alt="各部门处理速度"></p>
+<p>其中张家界校区财务办处理信件的速度最慢，历史与文化学院处理信件的速度最快，从上面各部门信件数量上来看历史与文化学院与张家界校区财务办信件数量上是差不多的，都比较少。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">11</span>, <span class="number">6</span>))</span><br><span class="line">df3 = df.set_index(<span class="string">'type'</span>).groupby(<span class="string">'type'</span>).sum()</span><br><span class="line">df3[<span class="string">'num'</span>].plot(kind=<span class="string">'barh'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="8.png" alt="类型数量"></p>
+<p>看下信件的类型，其中最多的是反映，第二是投诉，最少的是表扬，看样子学校做的不好的地方还是有点多啊。</p>
+<p>好了，我们的数据分析先暂时到这。</p>
+
+            
+            
+                <div class="page-reward">
+                  <a href="javascript:;" class="page-reward-btn tooltip-top">
+                    <div class="tooltip tooltip-east">
+                    <span class="tooltip-item">
+                      赏
+                    </span>
+                    <span class="tooltip-content">
+                      <span class="tooltip-text">
+                        <span class="tooltip-inner">
+                          <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                          <div class="reward-box">
+                            
+                            <div class="reward-box-item">
+                              <img class="reward-img" src="/img/alipay.jpg">
+                              <span class="reward-type">支付宝</span>
+                            </div>
+                            
+                            
+                            <div class="reward-box-item">
+                              <img class="reward-img" src="/img/wechat.jpg">
+                              <span class="reward-type">微信</span>
+                            </div>
+                            
+                          </div>
+                        </span>
+                      </span>
+                    </span>
+                  </div>
+                  </a>
+                </div>
+              
+
+            
+                <div class="article-copyright">
+                    <p>本文首发于<a href="https://satradj.github.io/爬虫爬取了某大学阳光平台几千条信件后做了个有趣的分析/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
+                </div>
+            
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/Java虚拟机之JVM内存区域与Java对象/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Java虚拟机之JVM内存区域与Java对象
+                
+            </div>
+        </a>
+    
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="no-thumbnail">
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java并发/">Java并发</a></p>
+                            <p class="item-title"><a href="/Java并发之ThreadLocal源码分析/" class="title">Java并发之ThreadLocal源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-02-20T08:21:13.000Z" itemprop="datePublished">2018-02-20</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java并发/">Java并发</a></p>
+                            <p class="item-title"><a href="/Java并发之Semaphore源码分析/" class="title">Java并发之Semaphore源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-02-13T07:18:21.000Z" itemprop="datePublished">2018-02-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java并发/">Java并发</a></p>
+                            <p class="item-title"><a href="/Java并发之CyclicBarrier/" class="title">Java并发之CyclicBarrier源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-02-12T08:45:11.000Z" itemprop="datePublished">2018-02-12</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java并发/">Java并发</a></p>
+                            <p class="item-title"><a href="/Java并发之CountDownLatch源码分析/" class="title">Java并发之CountDownLatch源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-02-10T06:12:16.000Z" itemprop="datePublished">2018-02-10</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java并发/">Java并发</a></p>
+                            <p class="item-title"><a href="/Java并发之原子类源码分析-以AtomicInteger为例/" class="title">Java并发之原子类源码分析(以AtomicInteger为例)</a></p>
+                            <p class="item-date"><time datetime="2018-02-09T05:35:51.000Z" itemprop="datePublished">2018-02-09</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发/">Java并发</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java虚拟机/">Java虚拟机</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据分析/">数据分析</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java并发/">Java并发</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java虚拟机/">Java虚拟机</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据分析/">数据分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Java并发/" style="font-size: 20px;">Java并发</a> <a href="/tags/Java虚拟机/" style="font-size: 15px;">Java虚拟机</a> <a href="/tags/数据分析/" style="font-size: 10px;">数据分析</a> <a href="/tags/算法/" style="font-size: 10px;">算法</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://woquanke.com/">全科</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 我在万达摆地摊
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

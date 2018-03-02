@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Java虚拟机之类加载器 | 我在万达摆地摊&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="类加载器介绍类加载器负责将class文件加载到内存中，并为之生成对应的java.lang.Class对象。对于任意一个类，都需要加载它的类加载器和这个类本身来确定该类在JVM中唯一性，也就是说，同一个class文件用两个不同的类加载器加载并创建两个java.lang.Class对象，即使两个对象来源自同一个class文件，它们也是不相等的，这里“相等”包括Class对象的equals()方法、is">
+<meta name="keywords" content="Java虚拟机">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java虚拟机之类加载器">
+<meta property="og:url" content="https://satradj.github.io/Java虚拟机之类加载器/index.html">
+<meta property="og:site_name" content="我在万达摆地摊&#39;s blog">
+<meta property="og:description" content="类加载器介绍类加载器负责将class文件加载到内存中，并为之生成对应的java.lang.Class对象。对于任意一个类，都需要加载它的类加载器和这个类本身来确定该类在JVM中唯一性，也就是说，同一个class文件用两个不同的类加载器加载并创建两个java.lang.Class对象，即使两个对象来源自同一个class文件，它们也是不相等的，这里“相等”包括Class对象的equals()方法、is">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://satradj.github.io/Java虚拟机之类加载器/1.png">
+<meta property="og:image" content="https://satradj.github.io/Java虚拟机之类加载器/2.png">
+<meta property="og:image" content="https://satradj.github.io/Java虚拟机之类加载器/3.png">
+<meta property="og:image" content="https://satradj.github.io/Java虚拟机之类加载器/4.jpg">
+<meta property="og:image" content="https://satradj.github.io/Java虚拟机之类加载器/5.png">
+<meta property="og:updated_time" content="2018-02-01T05:20:22.386Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java虚拟机之类加载器">
+<meta name="twitter:description" content="类加载器介绍类加载器负责将class文件加载到内存中，并为之生成对应的java.lang.Class对象。对于任意一个类，都需要加载它的类加载器和这个类本身来确定该类在JVM中唯一性，也就是说，同一个class文件用两个不同的类加载器加载并创建两个java.lang.Class对象，即使两个对象来源自同一个class文件，它们也是不相等的，这里“相等”包括Class对象的equals()方法、is">
+<meta name="twitter:image" content="https://satradj.github.io/Java虚拟机之类加载器/1.png">
+    
+
+    
+
+    
+        <link rel="icon" href="/img/logo.jpg" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                
+                <span class="site-title">我在万达摆地摊&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/books">书单</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/img/logo.jpg" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/books">书单</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/img/logo.jpg" />
+            <h2 id="name">我在万达摆地摊</h2>
+            <h3 id="title">Java Developer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>ShangHai, China</span>
+            <a id="follow" target="_blank" href="https://github.com/satradj/">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                19
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                4
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/satradj/" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Java虚拟机之类加载器" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            Java虚拟机之类加载器
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/Java虚拟机之类加载器/">
+            <time datetime="2018-01-29T08:17:23.000Z" itemprop="datePublished">2018-01-29</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Java虚拟机/">Java虚拟机</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Java虚拟机/">Java虚拟机</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h1 id="类加载器介绍"><a href="#类加载器介绍" class="headerlink" title="类加载器介绍"></a>类加载器介绍</h1><p>类加载器负责将class文件加载到内存中，并为之生成对应的java.lang.Class对象。对于任意一个类，都需要加载它的类加载器和这个类本身来确定该类在JVM中唯一性，也就是说，同一个class文件用两个不同的类加载器加载并创建两个java.lang.Class对象，即使两个对象来源自同一个class文件，它们也是不相等的，这里“相等”包括Class对象的equals()方法、isAssignableFrom()方法、isInstance()方法，也包括使用instanceof关键字做对象所属关系判定情况。</p>
+<a id="more"></a>
+<h1 id="类加载器分类"><a href="#类加载器分类" class="headerlink" title="类加载器分类"></a>类加载器分类</h1><p>虚拟机提供了3种类加载器，启动（Bootstrap）类加载器、扩展（Extension）类加载器、应用程序（Application）类加载器（也称应用类加载器）</p>
+<h2 id="Bootstrap-ClassLoader"><a href="#Bootstrap-ClassLoader" class="headerlink" title="Bootstrap ClassLoader"></a>Bootstrap ClassLoader</h2><p>该类加载器没有父类加载器，它负责加载虚拟机的核心类库。Bootstrap ClassLoader加载器用于在启动JVM时加载类，以使JVM能正常工作，因而它是用Native（c++）代码实现的，最早被创建出来，处于最底层。它并没有继承java.lang.ClassLoader类。</p>
+<p>我们可以来看下Bootstrap ClassLoader加载了哪些类，查看Bootstrap ClassLoader加载的类可以通过System.getProperty(“sun.boot.class.path”)看到：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassLoaderTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        String path = System.getProperty(<span class="string">"sun.boot.class.path"</span>);</span><br><span class="line">        Arrays.asList(path.split(<span class="string">";"</span>)).forEach(System.out::println);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<p><img src="1.png" alt="Bootstrap ClassLoader加载的类"></p>
+<h2 id="Extension-ClassLoader"><a href="#Extension-ClassLoader" class="headerlink" title="Extension ClassLoader"></a>Extension ClassLoader</h2><p>该类加载器的父类加载器是根类加载器。它从java.ext.dirs系统属性所指定的目录获取加载类库或从JDK的安装目录的jre\lib\ext子目录下加载类库。如果把jar放到这个目录下，也会自动用扩展类加载器加载。扩展类加载器是java类，是java.lang.ClassLoader类的子类。</p>
+<p><img src="2.png" alt="Extension ClassLoader加载的类"></p>
+<h2 id="Application-ClassLoader"><a href="#Application-ClassLoader" class="headerlink" title="Application ClassLoader"></a>Application ClassLoader</h2><p>应用类加载器它的父类加载器是扩展类加载器，它将加载CLASSPATH中配置的目录和jar文件，它是用户自定义类加载器的默认父类加载器，系统类加载器是java类，是java.lang.ClassLoader类的子类。</p>
+<p><img src="3.png" alt="应用类加载器"></p>
+<p>类加载器之间的关系可用如图表示：</p>
+<p><img src="4.jpg" alt="类加载器关系"></p>
+<h1 id="自定义类加载器"><a href="#自定义类加载器" class="headerlink" title="自定义类加载器"></a>自定义类加载器</h1><p>用户可以自定义类加载器，自定义类加载器只需要继承java.lang.ClassLoader，重写父类的findClass方法即可完成自定义类加载器的编写。</p>
+<p>我们自己动手写一个类加载器，加载位于D盘根目录下的类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClassLoader</span> <span class="keyword">extends</span> <span class="title">ClassLoader</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String dir = <span class="string">"D:/"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//重写父类findClass方法</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> Class&lt;?&gt; findClass(String name) <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">        <span class="comment">//Java包是以目录形式存在在磁盘中，所以我们需要将.替换成/</span></span><br><span class="line">        String className = name.replace(<span class="string">"."</span>, <span class="string">"/"</span>);</span><br><span class="line">        File classFile = <span class="keyword">new</span> File(dir, className + <span class="string">".class"</span>);</span><br><span class="line">        <span class="keyword">if</span> (!classFile.exists()) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ClassNotFoundException();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//将类读成字节数组</span></span><br><span class="line">        <span class="keyword">byte</span>[] classBytes = loadClassBytes(classFile);</span><br><span class="line">        <span class="keyword">if</span> (classBytes == <span class="keyword">null</span> || classBytes.length == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ClassNotFoundException();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.defineClass(name, classBytes, <span class="number">0</span>, classBytes.length);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">byte</span>[] loadClassBytes(File classFile) &#123;</span><br><span class="line">        <span class="comment">//JDK7语法糖，try with resource语法，可以不用手动的关闭资源</span></span><br><span class="line">        <span class="keyword">try</span> (ByteArrayOutputStream bout = <span class="keyword">new</span> ByteArrayOutputStream();</span><br><span class="line">             FileInputStream fin = <span class="keyword">new</span> FileInputStream(classFile)) &#123;</span><br><span class="line">            <span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">            <span class="keyword">int</span> len;</span><br><span class="line">            <span class="keyword">while</span> ((len = fin.read(buffer)) != -<span class="number">1</span>) &#123;</span><br><span class="line">                bout.write(buffer, <span class="number">0</span>, len);</span><br><span class="line">            &#125;</span><br><span class="line">            bout.flush();</span><br><span class="line">            <span class="keyword">return</span> bout.toByteArray();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>新建一个HelloWorld类编译后放在D盘下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorld</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello World!"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试我们的类加载器：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassLoaderTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException </span>&#123;</span><br><span class="line">        MyClassLoader classLoader = <span class="keyword">new</span> MyClassLoader();</span><br><span class="line">        Class&lt;?&gt; clazz = classLoader.loadClass(<span class="string">"com.satra.classloader.HelloWorld"</span>);</span><br><span class="line">        System.out.println(clazz);</span><br><span class="line">        System.out.println(clazz.getClassLoader());</span><br><span class="line">        Object obj = clazz.newInstance();</span><br><span class="line">        Method method = clazz.getMethod(<span class="string">"hello"</span>, <span class="keyword">null</span>);</span><br><span class="line">        Object o = method.invoke(obj, <span class="keyword">null</span>);</span><br><span class="line">        System.out.println(o);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果：</p>
+<p><img src="5.png" alt="类加载器测试结果"></p>
+<h1 id="类加载器双亲委派模型"><a href="#类加载器双亲委派模型" class="headerlink" title="类加载器双亲委派模型"></a>类加载器双亲委派模型</h1><p>前面我们说过，同一个class文件用两个不同的类加载器加载并创建两个java.lang.Class对象，即使两个对象来源自同一个class文件，它们也是不相等的。例如当我们自定义的类加载器加载了java.lang包中的String类，这样会造成内存中存在两个String的Class对象，而这两个Class对象的实例对象的eques会不相等，对虚拟机的稳定运行造成危害。所以虚拟机定义了双亲委派模型来解决这个问题。</p>
+<p>双亲委派模型是指：某个特定的类加载器在接到加载类的请求时，首先将加载任务委托给父类加载器，依次递归，如果父类加载器可以完成类加载任务，就成功返回；只有父类加载器无法完成此加载任务时，才自己去加载。</p>
+<p>我们可以看下JDK类加载器源码的实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String name, <span class="keyword">boolean</span> resolve)</span><br><span class="line">        <span class="keyword">throws</span> ClassNotFoundException</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (getClassLoadingLock(name)) &#123;</span><br><span class="line">            Class&lt;?&gt; c = findLoadedClass(name);</span><br><span class="line">            <span class="keyword">if</span> (c == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">long</span> t0 = System.nanoTime();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">//首先看这个类加载器是否有父类</span></span><br><span class="line">                    <span class="keyword">if</span> (parent != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        <span class="comment">//有父类交由父类去加载</span></span><br><span class="line">                        c = parent.loadClass(name, <span class="keyword">false</span>);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="comment">//没有父类说明这个类加载器是Bootstrap类加载器调用本地方法去加载</span></span><br><span class="line">                        c = findBootstrapClassOrNull(name);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//有父类且父类不能完成加载或者没有父类时，调用findClass完成加载</span></span><br><span class="line">                <span class="keyword">if</span> (c == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">long</span> t1 = System.nanoTime();</span><br><span class="line">                    c = findClass(name);</span><br><span class="line">                    sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);</span><br><span class="line">                    sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);</span><br><span class="line">                    sun.misc.PerfCounter.getFindClasses().increment();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (resolve) &#123;</span><br><span class="line">                resolveClass(c);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> c;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>《深入理解Java虚拟机:JVM高级特性与最佳实践》 周志明著</p>
+
+            
+            
+                <div class="page-reward">
+                  <a href="javascript:;" class="page-reward-btn tooltip-top">
+                    <div class="tooltip tooltip-east">
+                    <span class="tooltip-item">
+                      赏
+                    </span>
+                    <span class="tooltip-content">
+                      <span class="tooltip-text">
+                        <span class="tooltip-inner">
+                          <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                          <div class="reward-box">
+                            
+                            <div class="reward-box-item">
+                              <img class="reward-img" src="/img/alipay.jpg">
+                              <span class="reward-type">支付宝</span>
+                            </div>
+                            
+                            
+                            <div class="reward-box-item">
+                              <img class="reward-img" src="/img/wechat.jpg">
+                              <span class="reward-type">微信</span>
+                            </div>
+                            
+                          </div>
+                        </span>
+                      </span>
+                    </span>
+                  </div>
+                  </a>
+                </div>
+              
+
+            
+                <div class="article-copyright">
+                    <p>本文首发于<a href="https://satradj.github.io/Java虚拟机之类加载器/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
+                </div>
+            
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/Java虚拟机之内存模型与volatile/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Java虚拟机之内存模型与volatile
+                
+            </div>
+        </a>
+    
+    
+        <a href="/Java虚拟机之类加载机制/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Java虚拟机之类加载机制</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="no-thumbnail">
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java并发/">Java并发</a></p>
+                            <p class="item-title"><a href="/Java并发之ThreadLocal源码分析/" class="title">Java并发之ThreadLocal源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-02-20T08:21:13.000Z" itemprop="datePublished">2018-02-20</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java并发/">Java并发</a></p>
+                            <p class="item-title"><a href="/Java并发之Semaphore源码分析/" class="title">Java并发之Semaphore源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-02-13T07:18:21.000Z" itemprop="datePublished">2018-02-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java并发/">Java并发</a></p>
+                            <p class="item-title"><a href="/Java并发之CyclicBarrier/" class="title">Java并发之CyclicBarrier源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-02-12T08:45:11.000Z" itemprop="datePublished">2018-02-12</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java并发/">Java并发</a></p>
+                            <p class="item-title"><a href="/Java并发之CountDownLatch源码分析/" class="title">Java并发之CountDownLatch源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-02-10T06:12:16.000Z" itemprop="datePublished">2018-02-10</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java并发/">Java并发</a></p>
+                            <p class="item-title"><a href="/Java并发之原子类源码分析-以AtomicInteger为例/" class="title">Java并发之原子类源码分析(以AtomicInteger为例)</a></p>
+                            <p class="item-date"><time datetime="2018-02-09T05:35:51.000Z" itemprop="datePublished">2018-02-09</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发/">Java并发</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java虚拟机/">Java虚拟机</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据分析/">数据分析</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java并发/">Java并发</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java虚拟机/">Java虚拟机</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据分析/">数据分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Java并发/" style="font-size: 20px;">Java并发</a> <a href="/tags/Java虚拟机/" style="font-size: 15px;">Java虚拟机</a> <a href="/tags/数据分析/" style="font-size: 10px;">数据分析</a> <a href="/tags/算法/" style="font-size: 10px;">算法</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://woquanke.com/">全科</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 我在万达摆地摊
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
