@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="我在万达摆地摊&#39;s blog">
 <meta property="og:description" content="线程不安全首先我们来看一段代码：">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-02-01T05:26:50.792Z">
+<meta property="og:updated_time" content="2018-03-06T05:40:34.467Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java并发之线程安全">
 <meta name="twitter:description" content="线程不安全首先我们来看一段代码：">
@@ -249,7 +249,7 @@
 <li>使用Lock的时候，等待/通知 是使用的Condition对象的await()/signal()/signalAll()  ，而使用synchronized的时候，则是对象的wait()/notify()/notifyAll();由此可以看出，使用Lock的时候，粒度更细了，一个Lock可以对应多个Condition。</li>
 <li>虽然Lock缺少了synchronized隐式获取释放锁的便捷性，但是却拥有了锁获取与是释放的可操作性、可中断的获取锁以及超时获取锁等多种synchronized所不具备的同步特性;</li>
 </ol>
-<h1 id="Java提供的线程工具"><a href="#Java提供的线程工具" class="headerlink" title="Java提供的线程工具"></a>Java提供的线程工具</h1><p>lock：ReentrantLock、ReentrantReadWriteLock、StampedLock(JDK8新增);<br>原子类：AtomicXXXXXX；<br>信号量：CountDownLatch、CyclicBarrier、Semaphore；<br>线程安全容器：ConcurrentHashMap、ConcurrentLinkedDeque、ConcurrentLinkedQueue、ConcurrentSkipListMap、ConcurrentSkipListSet等；<br>其他的还有线程池工具，ForkJoin框架；</p>
+<h1 id="Java提供的线程工具"><a href="#Java提供的线程工具" class="headerlink" title="Java提供的线程工具"></a>Java提供的线程工具</h1><p>lock：ReentrantLock、ReentrantReadWriteLock、StampedLock(JDK8新增);<br>原子类：AtomicXXXXXX；<br>信号量：CountDownLatch、CyclicBarrier、Semaphore；<br>其他的还有线程池工具，ForkJoin框架；</p>
 <p>我们的多线程系列文章就是围绕这些个类和工具展开分析。</p>
 
             
