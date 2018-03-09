@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>BST树与AVL树 | 我在万达摆地摊&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="抽象树结构定义本文将介绍BST树与AVL树，树的数据结构是类似于链表，首先我们需要一个抽象类AbstractTree，该类里面定义了树节点的数据结构，以及完成树的先序、中序、后续遍历的代码模板，后面的BST与AVL树将继承这个抽象类； 首先我们定义树节点的数据结构，通过内部类定义：">
+<meta name="keywords" content="数据结构与算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BST树与AVL树">
+<meta property="og:url" content="http://satra.gitee.io/blog/BST树与AVL树/index.html">
+<meta property="og:site_name" content="我在万达摆地摊&#39;s blog">
+<meta property="og:description" content="抽象树结构定义本文将介绍BST树与AVL树，树的数据结构是类似于链表，首先我们需要一个抽象类AbstractTree，该类里面定义了树节点的数据结构，以及完成树的先序、中序、后续遍历的代码模板，后面的BST与AVL树将继承这个抽象类； 首先我们定义树节点的数据结构，通过内部类定义：">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://satra.gitee.io/blog/BST树与AVL树/1.png">
+<meta property="og:image" content="http://satra.gitee.io/blog/BST树与AVL树/2.png">
+<meta property="og:image" content="http://satra.gitee.io/blog/BST树与AVL树/3.png">
+<meta property="og:image" content="http://satra.gitee.io/blog/BST树与AVL树/4.png">
+<meta property="og:image" content="http://satra.gitee.io/blog/BST树与AVL树/5.png">
+<meta property="og:image" content="http://satra.gitee.io/blog/BST树与AVL树/6.png">
+<meta property="og:image" content="http://satra.gitee.io/blog/BST树与AVL树/7.png">
+<meta property="og:updated_time" content="2018-03-09T10:21:21.134Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="BST树与AVL树">
+<meta name="twitter:description" content="抽象树结构定义本文将介绍BST树与AVL树，树的数据结构是类似于链表，首先我们需要一个抽象类AbstractTree，该类里面定义了树节点的数据结构，以及完成树的先序、中序、后续遍历的代码模板，后面的BST与AVL树将继承这个抽象类； 首先我们定义树节点的数据结构，通过内部类定义：">
+<meta name="twitter:image" content="http://satra.gitee.io/blog/BST树与AVL树/1.png">
+    
+
+    
+
+    
+        <link rel="icon" href="/blog/img/logo.jpg" />
+    
+
+    <link rel="stylesheet" href="/blog/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/blog/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/blog/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/blog/css/style.css">
+
+    <script src="/blog/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/blog/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/blog/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/blog/" id="logo">
+                
+                <span class="site-title">我在万达摆地摊&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/blog/.">主页</a>
+                
+                    <a class="main-nav-link" href="/blog/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/blog/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/blog/books">书单</a>
+                
+                    <a class="main-nav-link" href="/blog/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/blog/img/logo.jpg" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/blog/',
+        CONTENT_URL: '/blog/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/blog/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/blog/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/blog/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/blog/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/blog/books">书单</a></td>
+                
+                    <td><a class="main-nav-link" href="/blog/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/blog/img/logo.jpg" />
+            <h2 id="name">我在万达摆地摊</h2>
+            <h3 id="title">Java Developer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>ShangHai, China</span>
+            <a id="follow" target="_blank" href="https://github.com/satradj/">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                21
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                4
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/satradj/" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-BST树与AVL树" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            BST树与AVL树
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/blog/BST树与AVL树/">
+            <time datetime="2018-03-09T08:43:35.000Z" itemprop="datePublished">2018-03-09</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/blog/categories/数据结构与算法/">数据结构与算法</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/blog/tags/数据结构与算法/">数据结构与算法</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h1 id="抽象树结构定义"><a href="#抽象树结构定义" class="headerlink" title="抽象树结构定义"></a>抽象树结构定义</h1><p>本文将介绍BST树与AVL树，树的数据结构是类似于链表，首先我们需要一个抽象类AbstractTree，该类里面定义了树节点的数据结构，以及完成树的先序、中序、后续遍历的代码模板，后面的BST与AVL树将继承这个抽象类；</p>
+<p>首先我们定义树节点的数据结构，通过内部类定义：</p>
+<a id="more"></a>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 树节点</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> &lt;k&gt; key</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> &lt;v&gt; value</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">k</span> <span class="keyword">extends</span> <span class="title">Comparable</span>&lt;<span class="title">k</span>&gt;, <span class="title">v</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> k key;</span><br><span class="line">    <span class="keyword">private</span> v value;</span><br><span class="line">    <span class="keyword">private</span> Node left;</span><br><span class="line">    <span class="keyword">private</span> Node right;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> height;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(k key, v value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.key = key;</span><br><span class="line">        <span class="keyword">this</span>.value = value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//省略了get、set方法</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"key:"</span> + key + <span class="string">","</span> + <span class="string">"value:"</span> + value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后完成树的先序、中序、后续遍历的模板代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 先序遍历</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">preOrder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    preOrder(root);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">preOrder</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    System.out.println(node);</span><br><span class="line">    preOrder(node.getLeft());</span><br><span class="line">    preOrder(node.getRight());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 中序遍历</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">middleOrder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    middleOrder(root);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">middleOrder</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    middleOrder(node.getLeft());</span><br><span class="line">    System.out.println(node);</span><br><span class="line">    middleOrder(node.getRight());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 后序遍历</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postOrder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    postOrder(root);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">postOrder</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    postOrder(node.getLeft());</span><br><span class="line">    postOrder(node.getRight());</span><br><span class="line">    System.out.println(node);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于树，我们需要写出它的添加节点、查找节点、删除节点方法，所以，我们在这个抽象类中添加添加节点、查找节点、删除节点的抽象方法交给子类具体的“树”去实现；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 添加元素</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> key</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> value</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(k key, v value)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 查找元素</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> key</span></span><br><span class="line"><span class="comment">* <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> v <span class="title">get</span><span class="params">(k key)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 删除元素</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> key</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">del</span><span class="params">(k key)</span></span>;</span><br></pre></td></tr></table></figure>
+<h1 id="BST树"><a href="#BST树" class="headerlink" title="BST树"></a>BST树</h1><h2 id="BST树介绍"><a href="#BST树介绍" class="headerlink" title="BST树介绍"></a>BST树介绍</h2><p>BST全称为Binary Search Tree，即二叉搜索树；</p>
+<p>一颗二叉树具有如下性质被称之为BST树：</p>
+<ul>
+<li>若任意节点的左子树不空，则左子树上所有节点的值均小于它的根节点的值；</li>
+<li>若任意节点的右子树不空，则右子树上所有节点的值均大于它的根节点的值；</li>
+<li>任意节点的左、右子树也分别为二叉查找树；</li>
+<li>没有键值相等的节点。</li>
+</ul>
+<p>下图就是一颗典型的BST树：</p>
+<p><img src="1.png" alt="BST树"></p>
+<h2 id="BST树实现"><a href="#BST树实现" class="headerlink" title="BST树实现"></a>BST树实现</h2><p>首先需要继承之前的树的抽象类AbstractTree；</p>
+<p>接下来实现BST树的添加节点、查找节点、删除节点方法；</p>
+<h3 id="添加节点"><a href="#添加节点" class="headerlink" title="添加节点"></a>添加节点</h3><p>首先需要判断root节点是否已经初始化了，若没有初始化需要先初始化root节点；</p>
+<p>当一个key-value需要被插入BST树时，首先判断key与节点的大小，若key大于节点的key值继续搜寻节点的右子树，若key小于节点的key值则继续搜寻节点的左子节点，直到找到某个节点的左子节点或者右子节点为空时，将需要插入的key-value插入；</p>
+<p>非递归实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(k key, v value)</span> </span>&#123;</span><br><span class="line">    Node root = getRoot();</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">//root还未初始化</span></span><br><span class="line">        setRoot(<span class="keyword">new</span> Node(key, value));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//root已经初始化</span></span><br><span class="line">        Node tmp = root;</span><br><span class="line">        <span class="keyword">while</span> (tmp != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">//BST树插入节点都是叶子节点</span></span><br><span class="line">            <span class="keyword">int</span> com = tmp.getKey().compareTo(key);</span><br><span class="line">            <span class="keyword">if</span> (com == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">//相等，替换value值并退出函数</span></span><br><span class="line">                tmp.setValue(value);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (com &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">//比tmp小，找左节点</span></span><br><span class="line">                <span class="keyword">if</span> (tmp.getLeft() == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="comment">//如果左节点为空，即为要插入位置</span></span><br><span class="line">                    tmp.setLeft(<span class="keyword">new</span> Node(key, value));</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">//如果不为空继续找左节点</span></span><br><span class="line">                    tmp = tmp.getLeft();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (com &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">//比tmp大，找右节点</span></span><br><span class="line">                <span class="keyword">if</span> (tmp.getRight() == <span class="keyword">null</span>)</span><br><span class="line">                    tmp.setRight(<span class="keyword">new</span> Node(key, value));</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                    tmp = tmp.getRight();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>递归实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Node <span class="title">add</span><span class="params">(Node node, k key, v value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Node(key, value);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> com = node.getKey().compareTo(key);</span><br><span class="line">    <span class="keyword">if</span> (com == <span class="number">0</span>) &#123;</span><br><span class="line">        node.setValue(value);</span><br><span class="line">        <span class="keyword">return</span> node;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (com &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        node.setLeft(add(node.getLeft(), key, value));</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (com &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        node.setRight(add(node.getRight(), key, value));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="查找节点"><a href="#查找节点" class="headerlink" title="查找节点"></a>查找节点</h3><p>查找结点比较容易，首先判断根节点是否为空，若为空则返回空，不为空比较key与节点的key大小，若key大于节点的key则继续查找节点的右节点，若key小于节点的key则继续查找节点的左节点，当key等于节点的key值时代表找到了，返回value即可；</p>
+<p>非递归实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> v <span class="title">get</span><span class="params">(k key)</span> </span>&#123;</span><br><span class="line">    Node root = getRoot();</span><br><span class="line">    Node tmp = root;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (tmp != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> com = tmp.getKey().compareTo(key);</span><br><span class="line">            <span class="keyword">if</span> (com == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">//相等，找到并返回</span></span><br><span class="line">                <span class="keyword">return</span> (v) tmp.getValue();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (com &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">//比tmp小，找左节点</span></span><br><span class="line">                tmp = tmp.getLeft();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (com &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">//比tmp大，找右节点</span></span><br><span class="line">                tmp = tmp.getRight();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//未找到</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>递归实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Node <span class="title">get</span><span class="params">(Node node, k key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> com = node.getKey().compareTo(key);</span><br><span class="line">    <span class="keyword">if</span> (com == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> node;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (com &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> get(node.getLeft(), key);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> get(node.getRight(), key);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="删除节点"><a href="#删除节点" class="headerlink" title="删除节点"></a>删除节点</h3><p>删除节点相对较复杂，可分为如下几步：</p>
+<ol>
+<li>首先找打需要删除节点和其父节点；</li>
+<li>如果该节点为叶子节点，直接删除；</li>
+<li>如果该节点只有左节点或者右节点，用该节点左节点或者右节点替代该节点；</li>
+<li>如果该节点既有左节点又有右节点，用该节点右节点最小节点替代该节点并删除该节点右节点最小节点；</li>
+</ol>
+<p>非递归实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">del</span><span class="params">(k key)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//首先找打需要删除节点和其父节点</span></span><br><span class="line">    Node parent = getRoot();</span><br><span class="line">    Node delNode = parent;</span><br><span class="line">    <span class="comment">//记录删除节点是父节点的左子节点还是右子节点</span></span><br><span class="line">    <span class="keyword">boolean</span> left = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">while</span> (delNode != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> com = delNode.getKey().compareTo(key);</span><br><span class="line">        <span class="keyword">if</span> (com == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">//找到要删除节点，跳出循环</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (com &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">//比tmp小，找左节点</span></span><br><span class="line">            parent = delNode;</span><br><span class="line">            delNode = delNode.getLeft();</span><br><span class="line">            left = <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (com &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">//比tmp大找右节点</span></span><br><span class="line">            parent = delNode;</span><br><span class="line">            delNode = delNode.getRight();</span><br><span class="line">            left = <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//跳出循环：1）找到要删除节点；2）没有找到，需要抛出异常</span></span><br><span class="line">    <span class="keyword">if</span> (delNode == <span class="keyword">null</span> || delNode.getKey().compareTo(key) != <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"要删除节点不存在！"</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//如果该节点为叶子节点，直接删除</span></span><br><span class="line">    <span class="comment">//如果该节点只有左节点或者右节点，用该节点左节点或者右节点替代该节点</span></span><br><span class="line">    <span class="keyword">if</span> (delNode.getRight() == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (left)</span><br><span class="line">            parent.setLeft(delNode.getLeft());</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            parent.setRight(delNode.getLeft());</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (delNode.getLeft() == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (left)</span><br><span class="line">            parent.setLeft(delNode.getRight());</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            parent.setRight(delNode.getRight());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//如果该节点既有左节点又有右节点，用该节点右节点最小节点替代该节点并删除该节点右节点最小节点</span></span><br><span class="line">        Node min = getMin(delNode.getRight());</span><br><span class="line">        delNode.setKey(min.getKey());</span><br><span class="line">        delNode.setValue(min.getValue());</span><br><span class="line">        delNode.setRight(delMin(delNode.getRight()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里把查找某个节点的最小子节点和删除某个节点的最小节点封装起来了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 查找某个节点下的最小子节点</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> node</span></span><br><span class="line"><span class="comment">* <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">getMin</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node.getLeft() == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> node;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> getMin(node.getLeft());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 删除某个节点下的最小子节点</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> node</span></span><br><span class="line"><span class="comment">* <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">delMin</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node.getLeft() == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> node.getRight();</span><br><span class="line">    &#125;</span><br><span class="line">    node.setLeft(delMin(node.getLeft()));</span><br><span class="line">    <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>递归实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Node <span class="title">del</span><span class="params">(Node node, k key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> com = node.getKey().compareTo(key);</span><br><span class="line">    <span class="keyword">if</span> (com == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//找到要删除的节点</span></span><br><span class="line">        <span class="comment">//如果该节点为叶子节点，直接删除</span></span><br><span class="line">        <span class="comment">//如果该节点只有左节点或者右节点，用该节点左节点或者右节点替代该节点</span></span><br><span class="line">        <span class="keyword">if</span> (node.getLeft() == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">return</span> node.getRight();</span><br><span class="line">        <span class="keyword">if</span> (node.getRight() == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">return</span> node.getLeft();</span><br><span class="line">        Node min = getMin(node.getRight());</span><br><span class="line">        node.setKey(min.getKey());</span><br><span class="line">        node.setValue(min.getValue());</span><br><span class="line">        node.setRight(delMin(node.getRight()));</span><br><span class="line">        <span class="keyword">return</span> node;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (com &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//找左节点</span></span><br><span class="line">        node.setLeft(del(node.getLeft(), key));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//找右节点</span></span><br><span class="line">        node.setRight(del(node.getRight(), key));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="AVL树"><a href="#AVL树" class="headerlink" title="AVL树"></a>AVL树</h1><h2 id="AVL树介绍"><a href="#AVL树介绍" class="headerlink" title="AVL树介绍"></a>AVL树介绍</h2><p>AVL树是一种自平衡二叉查找树，在AVL树中任何节点的两个子树的高度最大差别为1，所以它也被称为高度平衡树。查找、插入和删除在平均和最坏情况下的时间复杂度都是O(log n)。</p>
+<h2 id="AVL树的平衡性与旋转"><a href="#AVL树的平衡性与旋转" class="headerlink" title="AVL树的平衡性与旋转"></a>AVL树的平衡性与旋转</h2><p>如下图所示的一棵树任何节点的两个子树的高度最大差别不超过1，是一颗AVL树：</p>
+<p><img src="2.png" alt="AVL树"></p>
+<p>而对于这颗树而言，它的跟节点的左右子节点的高度差超过了1，所以不是一颗AVL树：</p>
+<p><img src="3.png" alt="非AVL树"></p>
+<p>对于一个节点，当其为叶子节点时，其高度为0，当且为null时，高度为-1，所以我们可以封装一个获取节点高度的函数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 获取节点高度</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> node</span></span><br><span class="line"><span class="comment">* <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">height</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> node == <span class="keyword">null</span> ? -<span class="number">1</span> : node.getHeight();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于一个节点，其父节点的高度总是等于其左子节点与其右子节点最高高度加1；</p>
+<p>而我们在插入和删除元素的时候总是会破坏一颗AVL树的平衡性的，对于被破坏了平衡性的AVL树需要通过旋转来维持它的平衡；</p>
+<p>对于一个被破坏了平衡性的节点α而言，有四种旋转的方式：</p>
+<table>
+<thead>
+<tr>
+<th>符号描述</th>
+<th>描述</th>
+<th>旋转方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LL</td>
+<td>对α的左儿子的左子树进行一次插入</td>
+<td>右旋</td>
+</tr>
+<tr>
+<td>LR</td>
+<td>对α的左儿子的右子树进行一次插入</td>
+<td>先左旋再右旋</td>
+</tr>
+<tr>
+<td>RL</td>
+<td>对α的右儿子的左子树进行一次插入</td>
+<td>先右旋再左旋</td>
+</tr>
+<tr>
+<td>RR</td>
+<td>对α的右儿子的右子树进行一次插入</td>
+<td>左旋</td>
+</tr>
+</tbody>
+</table>
+<p>LL右旋：</p>
+<p><img src="4.png" alt="右旋"></p>
+<p>代码实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 右旋</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> node</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">rightRotate</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">    Node left = node.getLeft();</span><br><span class="line">    node.setLeft(left.getRight());</span><br><span class="line">    left.setRight(node);</span><br><span class="line">    <span class="comment">//旋转完需要重新计算node的高度</span></span><br><span class="line">    node.setHeight(Math.max(height(node.getLeft()), height(node.getRight())) + <span class="number">1</span>);</span><br><span class="line">    left.setHeight(Math.max(height(left.getLeft()), height(left.getRight())) + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> left;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>RR左旋：</p>
+<p><img src="5.png" alt="左旋"></p>
+<p>代码实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 左旋</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> node</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">leftRotate</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">    Node right = node.getRight();</span><br><span class="line">    node.setRight(right.getLeft());</span><br><span class="line">    right.setLeft(node);</span><br><span class="line">    <span class="comment">//旋转完需要重新计算node的高度</span></span><br><span class="line">    node.setHeight(Math.max(height(node.getLeft()), height(node.getRight())) + <span class="number">1</span>);</span><br><span class="line">    right.setHeight(Math.max(height(right.getLeft()), height(right.getLeft())) + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>LR先左旋再右旋：</p>
+<p><img src="6.png" alt="先左旋再右旋"></p>
+<p>代码实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 先左旋再右旋</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> node</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">leftAndRightRotate</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">    node.setLeft(leftRotate(node.getLeft()));</span><br><span class="line">    <span class="keyword">return</span> rightRotate(node);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>RL先右旋再左旋：</p>
+<p><img src="7.png" alt="先右旋再左旋"></p>
+<p>代码实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 先右旋再左旋</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> node</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">rightAndLeftRotate</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">    node.setRight(rightRotate(node.getRight()));</span><br><span class="line">    <span class="keyword">return</span> leftRotate(node);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所以对于这四种情况，我们可以通过一个函数来解决：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 调整节点</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> node</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> key</span></span><br><span class="line"><span class="comment">* <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">adjust</span><span class="params">(Node node, k key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> balance = height(node.getLeft()) - height(node.getRight());</span><br><span class="line">    <span class="comment">//LL</span></span><br><span class="line">    <span class="keyword">if</span> (balance &gt; <span class="number">1</span> &amp;&amp; node.getKey().compareTo(key) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> rightRotate(node);</span><br><span class="line">    <span class="comment">//LR</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (balance &gt; <span class="number">1</span> &amp;&amp; node.getLeft().getKey().compareTo(key) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> leftAndRightRotate(node);</span><br><span class="line">    <span class="comment">//RR</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (balance &lt; -<span class="number">1</span> &amp;&amp; node.getKey().compareTo(key) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> leftRotate(node);</span><br><span class="line">    <span class="comment">//RL</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (balance &lt; -<span class="number">1</span> &amp;&amp; node.getLeft().getKey().compareTo(key) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> rightAndLeftRotate(node);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="AVL树实现"><a href="#AVL树实现" class="headerlink" title="AVL树实现"></a>AVL树实现</h2><h3 id="添加节点-1"><a href="#添加节点-1" class="headerlink" title="添加节点"></a>添加节点</h3><p>添加节点可以再BST树递归实现的添加节点的代码基础上增加上旋转调整的代码来实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(k key, v value)</span> </span>&#123;</span><br><span class="line">    setRoot(add(getRoot(), key, value));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">add</span><span class="params">(Node node, k key, v value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Node(key, value);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> com = node.getKey().compareTo(key);</span><br><span class="line">    <span class="keyword">if</span> (com == <span class="number">0</span>) &#123;</span><br><span class="line">        node.setValue(value);</span><br><span class="line">        <span class="keyword">return</span> node;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (com &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//左子树</span></span><br><span class="line">        node.setLeft(add(node.getLeft(), key, value));</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (com &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//右子树</span></span><br><span class="line">        node.setRight(add(node.getRight(), key, value));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//调整高度</span></span><br><span class="line">    node.setHeight(Math.max(height(node.getLeft()), height(node.getRight())) + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> adjust(node, key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="查找节点-1"><a href="#查找节点-1" class="headerlink" title="查找节点"></a>查找节点</h3><p>查找节点的实现方式与BST树的查找方式完全一致，这里就不放代码了；</p>
+<h3 id="删除节点-1"><a href="#删除节点-1" class="headerlink" title="删除节点"></a>删除节点</h3><p>删除节点的思路与BST树删除节点思路一致，不同的是，在删除一个节点后，需要重新计算其高度，并且判断其是否平衡，当其不平衡时，需要重新调整，使其平衡；值得注意的是，在删除完该节点右节点最小节点后，也需要重新计算这个最小节点的高度以及判断是否平衡，若不平衡也需要重新调整，使其平衡；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">del</span><span class="params">(k key)</span> </span>&#123;</span><br><span class="line">    setRoot(del(getRoot(), key));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">del</span><span class="params">(Node node, k key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> com = node.getKey().compareTo(key);</span><br><span class="line">    <span class="keyword">if</span> (com == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//找到要删除节点，删除</span></span><br><span class="line">        <span class="keyword">if</span> (node.getLeft() == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">return</span> node.getRight();</span><br><span class="line">        <span class="keyword">if</span> (node.getRight() == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">return</span> node.getLeft();</span><br><span class="line">        Node min = getMin(node.getRight());</span><br><span class="line">        node.setKey(min.getKey());</span><br><span class="line">        node.setValue(min.getValue());</span><br><span class="line">        node.setRight(delMin(node.getRight()));</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (com &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//在左子树上</span></span><br><span class="line">        node.setLeft(del(node.getLeft(), key));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//在右子树上</span></span><br><span class="line">        node.setRight(del(node.getRight(), key));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//调整高度</span></span><br><span class="line">    node.setHeight(Math.max(height(node.getLeft()), height(node.getRight())) + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> adjust(node, key);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">getMin</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node.getLeft() == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> node;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> getMin(node.getLeft());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">delMin</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node.getLeft() == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> node.getRight();</span><br><span class="line">    &#125;</span><br><span class="line">    node.setLeft(delMin(node.getLeft()));</span><br><span class="line">    <span class="comment">//删除完最小节点后需要重新计算其位置节点高度</span></span><br><span class="line">    node.setHeight(Math.max(height(node.getLeft()), height(node.getRight())) + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>本文图片素材源自网络，如有侵权请告知，本人删除。</p>
+</blockquote>
+
+            
+            
+                <div class="page-reward">
+                  <a href="javascript:;" class="page-reward-btn tooltip-top">
+                    <div class="tooltip tooltip-east">
+                    <span class="tooltip-item">
+                      赏
+                    </span>
+                    <span class="tooltip-content">
+                      <span class="tooltip-text">
+                        <span class="tooltip-inner">
+                          <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                          <div class="reward-box">
+                            
+                            <div class="reward-box-item">
+                              <img class="reward-img" src="/blog/img/alipay.jpg">
+                              <span class="reward-type">支付宝</span>
+                            </div>
+                            
+                            
+                            <div class="reward-box-item">
+                              <img class="reward-img" src="/blog/img/wechat.jpg">
+                              <span class="reward-type">微信</span>
+                            </div>
+                            
+                          </div>
+                        </span>
+                      </span>
+                    </span>
+                  </div>
+                  </a>
+                </div>
+              
+
+            
+                <div class="article-copyright">
+                    <p>本文首发于<a href="http://satra.gitee.io/blog/BST树与AVL树/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
+                </div>
+            
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/blog/Java并发之线程池源码分析/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Java并发之线程池源码分析</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="no-thumbnail">
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/blog/categories/数据结构与算法/">数据结构与算法</a></p>
+                            <p class="item-title"><a href="/blog/BST树与AVL树/" class="title">BST树与AVL树</a></p>
+                            <p class="item-date"><time datetime="2018-03-09T08:43:35.000Z" itemprop="datePublished">2018-03-09</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/blog/categories/Java并发/">Java并发</a></p>
+                            <p class="item-title"><a href="/blog/Java并发之线程池源码分析/" class="title">Java并发之线程池源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-03-06T03:30:29.000Z" itemprop="datePublished">2018-03-06</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/blog/categories/Java并发/">Java并发</a></p>
+                            <p class="item-title"><a href="/blog/Java并发之ThreadLocal源码分析/" class="title">Java并发之ThreadLocal源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-02-20T08:21:13.000Z" itemprop="datePublished">2018-02-20</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/blog/categories/Java并发/">Java并发</a></p>
+                            <p class="item-title"><a href="/blog/Java并发之Semaphore源码分析/" class="title">Java并发之Semaphore源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-02-13T07:18:21.000Z" itemprop="datePublished">2018-02-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/blog/categories/Java并发/">Java并发</a></p>
+                            <p class="item-title"><a href="/blog/Java并发之CyclicBarrier/" class="title">Java并发之CyclicBarrier源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-02-12T08:45:11.000Z" itemprop="datePublished">2018-02-12</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/Java并发/">Java并发</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/Java虚拟机/">Java虚拟机</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/数据分析/">数据分析</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/数据结构与算法/">数据结构与算法</a><span class="category-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/03/">三月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/02/">二月 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/01/">一月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Java并发/">Java并发</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Java虚拟机/">Java虚拟机</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/数据分析/">数据分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/数据结构与算法/">数据结构与算法</a><span class="tag-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/blog/tags/Java并发/" style="font-size: 20px;">Java并发</a> <a href="/blog/tags/Java虚拟机/" style="font-size: 16.67px;">Java虚拟机</a> <a href="/blog/tags/数据分析/" style="font-size: 10px;">数据分析</a> <a href="/blog/tags/数据结构与算法/" style="font-size: 13.33px;">数据结构与算法</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://woquanke.com/">全科</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 我在万达摆地摊
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/blog/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/blog/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/blog/js/main.js"></script>
+
+    </div>
+</body>
+</html>
