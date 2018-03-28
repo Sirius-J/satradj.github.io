@@ -157,7 +157,7 @@
         </div>
         <div class="article-info profile-block">
             <div class="article-info-block">
-                23
+                24
                 <span>文章</span>
             </div>
             <div class="article-info-block">
@@ -186,6 +186,71 @@
 
             
             <section id="main">
+    <article id="post-Java并发之ReentrantReadWriteLock源码分析" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/blog/Java并发之ReentrantReadWriteLock源码分析/">Java并发之ReentrantReadWriteLock源码分析</a>
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/blog/Java并发之ReentrantReadWriteLock源码分析/">
+            <time datetime="2018-02-08T02:55:42.000Z" itemprop="datePublished">2018-02-08</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/blog/categories/Java并发/">Java并发</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/blog/tags/Java并发/">Java并发</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            <p><h1 id="ReadWriteLock"><a href="#ReadWriteLock" class="headerlink" title="ReadWriteLock"></a>ReadWriteLock</h1><p>ReadWriteLock是一个读写锁接口，所谓读写锁，是对访问资源共享锁和互斥锁，一般的重入性语义为如果对资源加了写锁，其他线程无法再获得写锁与读锁，但是持有写锁的线程，可以对资源加读锁（锁降级）；如果一个线程对资源加了读锁，其他线程可以继续加读锁。</p></p>
+            <p class="article-more-link">
+                <a href="/blog/Java并发之ReentrantReadWriteLock源码分析/#more">查看更多</a>
+            </p>
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+</article>
+
+
+
     <article id="post-七种常用排序算法介绍" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
@@ -779,72 +844,6 @@
 
 
 
-    <article id="post-Java虚拟机之类加载机制" class="article article-type-post" itemscope itemprop="blogPost">
-    <div class="article-inner">
-        
-        
-            <header class="article-header">
-                
-    
-        <h1 itemprop="name">
-            <a class="article-title" href="/blog/Java虚拟机之类加载机制/">Java虚拟机之类加载机制</a>
-        </h1>
-    
-
-                
-                    <div class="article-meta">
-                        
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/blog/Java虚拟机之类加载机制/">
-            <time datetime="2018-01-28T05:39:09.000Z" itemprop="datePublished">2018-01-28</time>
-        </a>
-    </div>
-
-
-                        
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/blog/categories/Java虚拟机/">Java虚拟机</a>
-    </div>
-
-                        
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/blog/tags/Java虚拟机/">Java虚拟机</a>
-    </div>
-
-                    </div>
-                
-            </header>
-        
-        
-        <div class="article-entry" itemprop="articleBody">
-        
-            <p><h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>Java虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型，这就是虚拟机的类加载机制。</p>
-<p>与其他语言不同的是在Java语言里，类的加载、连接和初始化过程都是在程序运行期间完成的，Java里可动态扩展的语言特性就是依赖运行期动态加载和动态连接这个特点实现的。</p></p>
-            <p class="article-more-link">
-                <a href="/blog/Java虚拟机之类加载机制/#more">查看更多</a>
-            </p>
-        
-        </div>
-        <footer class="article-footer">
-            <div class="share-container">
-
-
-
-</div>
-
-            
-    
-
-        </footer>
-    </div>
-    
-</article>
-
-
-
     <nav id="page-nav">
         <a class="extend prev" rel="prev" href="/blog/">&laquo; 上一页</a><a class="page-number" href="/blog/">1</a><span class="page-number current">2</span><a class="page-number" href="/blog/page/3/">3</a><a class="extend next" rel="next" href="/blog/page/3/">下一页 &raquo;</a>
     </nav>
@@ -858,6 +857,15 @@
         <h3 class="widget-title">最新文章</h3>
         <div class="widget">
             <ul id="recent-post" class="no-thumbnail">
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/blog/categories/Java容器/">Java容器</a></p>
+                            <p class="item-title"><a href="/blog/Java容器源码分析之LinkedList/" class="title">Java容器源码分析之LinkedList</a></p>
+                            <p class="item-date"><time datetime="2018-03-28T02:07:33.000Z" itemprop="datePublished">2018-03-28</time></p>
+                        </div>
+                    </li>
                 
                     <li>
                         
@@ -895,15 +903,6 @@
                         </div>
                     </li>
                 
-                    <li>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/blog/categories/Java并发/">Java并发</a></p>
-                            <p class="item-title"><a href="/blog/Java并发之ThreadLocal源码分析/" class="title">Java并发之ThreadLocal源码分析</a></p>
-                            <p class="item-date"><time datetime="2018-02-20T08:21:13.000Z" itemprop="datePublished">2018-02-20</time></p>
-                        </div>
-                    </li>
-                
             </ul>
         </div>
     </div>
@@ -913,7 +912,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">分类</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/Java容器/">Java容器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/Java并发/">Java并发</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/Java虚拟机/">Java虚拟机</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/spring/">spring</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/数据分析/">数据分析</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/数据结构与算法/">数据结构与算法</a><span class="category-list-count">2</span></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/Java容器/">Java容器</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/Java并发/">Java并发</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/Java虚拟机/">Java虚拟机</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/spring/">spring</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/数据分析/">数据分析</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/数据结构与算法/">数据结构与算法</a><span class="category-list-count">2</span></li></ul>
         </div>
     </div>
 
@@ -922,7 +921,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">归档</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/03/">三月 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/02/">二月 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/01/">一月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/03/">三月 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/02/">二月 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/01/">一月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -931,7 +930,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">标签</h3>
         <div class="widget">
-            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Java容器/">Java容器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Java并发/">Java并发</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Java虚拟机/">Java虚拟机</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/spring/">spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/数据分析/">数据分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/数据结构与算法/">数据结构与算法</a><span class="tag-list-count">2</span></li></ul>
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Java容器/">Java容器</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Java并发/">Java并发</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Java虚拟机/">Java虚拟机</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/spring/">spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/数据分析/">数据分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/数据结构与算法/">数据结构与算法</a><span class="tag-list-count">2</span></li></ul>
         </div>
     </div>
 
@@ -940,7 +939,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">标签云</h3>
         <div class="widget tagcloud">
-            <a href="/blog/tags/Java容器/" style="font-size: 10px;">Java容器</a> <a href="/blog/tags/Java并发/" style="font-size: 20px;">Java并发</a> <a href="/blog/tags/Java虚拟机/" style="font-size: 16.67px;">Java虚拟机</a> <a href="/blog/tags/spring/" style="font-size: 10px;">spring</a> <a href="/blog/tags/数据分析/" style="font-size: 10px;">数据分析</a> <a href="/blog/tags/数据结构与算法/" style="font-size: 13.33px;">数据结构与算法</a>
+            <a href="/blog/tags/Java容器/" style="font-size: 13.33px;">Java容器</a> <a href="/blog/tags/Java并发/" style="font-size: 20px;">Java并发</a> <a href="/blog/tags/Java虚拟机/" style="font-size: 16.67px;">Java虚拟机</a> <a href="/blog/tags/spring/" style="font-size: 10px;">spring</a> <a href="/blog/tags/数据分析/" style="font-size: 10px;">数据分析</a> <a href="/blog/tags/数据结构与算法/" style="font-size: 13.33px;">数据结构与算法</a>
         </div>
     </div>
 
