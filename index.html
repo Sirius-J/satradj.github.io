@@ -157,7 +157,7 @@
         </div>
         <div class="article-info profile-block">
             <div class="article-info-block">
-                24
+                25
                 <span>文章</span>
             </div>
             <div class="article-info-block">
@@ -186,6 +186,72 @@
 
             
             <section id="main">
+    <article id="post-Java容器源码分析之HashMap与HashSet" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/Java容器源码分析之HashMap与HashSet/">Java容器源码分析之HashMap与HashSet</a>
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/Java容器源码分析之HashMap与HashSet/">
+            <time datetime="2018-04-07T05:00:57.000Z" itemprop="datePublished">2018-04-07</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/Java容器/">Java容器</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Java容器/">Java容器</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            <p><h1 id="HashMap与HashSet介绍"><a href="#HashMap与HashSet介绍" class="headerlink" title="HashMap与HashSet介绍"></a>HashMap与HashSet介绍</h1><p>HashMap是Java为我们提供的一个存放键值对的容器，通过键的hash值定位存储位置，具有很快的访问速度。但是其遍历顺序是不确定的，这里所说的不确定是指其遍历的顺序与放入顺序不一致、多次遍历输出顺序不一致(可能会放进数据导致reHash，改变原有顺序)。HashMap允许有一个null的键，对于值没做要求。HashMap也是个非线程安全的容器，在并发环境下可以使用ynchronizedMap方法使HashMap具有线程安全的能力，或者使用ConcurrentHashMap。</p>
+<p>HashSet是Java为我们提供的一个集合类容器，他不允许容器内元素重复，底层采用HashMap实现(适配器模式)。</p></p>
+            <p class="article-more-link">
+                <a href="/Java容器源码分析之HashMap与HashSet/#more">查看更多</a>
+            </p>
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+</article>
+
+
+
     <article id="post-Java容器源码分析之LinkedList" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
@@ -774,71 +840,6 @@
 
 
 
-    <article id="post-Java并发之原子类源码分析-以AtomicInteger为例" class="article article-type-post" itemscope itemprop="blogPost">
-    <div class="article-inner">
-        
-        
-            <header class="article-header">
-                
-    
-        <h1 itemprop="name">
-            <a class="article-title" href="/Java并发之原子类源码分析-以AtomicInteger为例/">Java并发之原子类源码分析(以AtomicInteger为例)</a>
-        </h1>
-    
-
-                
-                    <div class="article-meta">
-                        
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/Java并发之原子类源码分析-以AtomicInteger为例/">
-            <time datetime="2018-02-09T05:35:51.000Z" itemprop="datePublished">2018-02-09</time>
-        </a>
-    </div>
-
-
-                        
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/Java并发/">Java并发</a>
-    </div>
-
-                        
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/Java并发/">Java并发</a>
-    </div>
-
-                    </div>
-                
-            </header>
-        
-        
-        <div class="article-entry" itemprop="articleBody">
-        
-            <p><h1 id="什么是原子类"><a href="#什么是原子类" class="headerlink" title="什么是原子类"></a>什么是原子类</h1><p>在我之前的博客文章中介绍了JVM的内存模型，JVM内存模型规定了对一个变量的操作分为八步，这八步分别是：Lock（锁定）、unlock(解锁)、read（读取）、load（载入）、use（使用）、assign（赋值）、store（存储）、write（写入）；也就是说，对于一个数的操作是分为八步完成的，即对一个数的操作不是一个原子操作，如：i++，在代码层面就一行代码，看似是原子操作，实际上在指令层面并不是一步完成的，而是多部完成的。这就造成了对于变量操作的线程安全问题。</p></p>
-            <p class="article-more-link">
-                <a href="/Java并发之原子类源码分析-以AtomicInteger为例/#more">查看更多</a>
-            </p>
-        
-        </div>
-        <footer class="article-footer">
-            <div class="share-container">
-
-
-
-</div>
-
-            
-    
-
-        </footer>
-    </div>
-    
-</article>
-
-
-
     <nav id="page-nav">
         <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">下一页 &raquo;</a>
     </nav>
@@ -852,6 +853,15 @@
         <h3 class="widget-title">最新文章</h3>
         <div class="widget">
             <ul id="recent-post" class="no-thumbnail">
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java容器/">Java容器</a></p>
+                            <p class="item-title"><a href="/Java容器源码分析之HashMap与HashSet/" class="title">Java容器源码分析之HashMap与HashSet</a></p>
+                            <p class="item-date"><time datetime="2018-04-07T05:00:57.000Z" itemprop="datePublished">2018-04-07</time></p>
+                        </div>
+                    </li>
                 
                     <li>
                         
@@ -889,15 +899,6 @@
                         </div>
                     </li>
                 
-                    <li>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/Java并发/">Java并发</a></p>
-                            <p class="item-title"><a href="/Java并发之线程池源码分析/" class="title">Java并发之线程池源码分析</a></p>
-                            <p class="item-date"><time datetime="2018-03-06T03:30:29.000Z" itemprop="datePublished">2018-03-06</time></p>
-                        </div>
-                    </li>
-                
             </ul>
         </div>
     </div>
@@ -907,7 +908,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">分类</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java容器/">Java容器</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发/">Java并发</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java虚拟机/">Java虚拟机</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据分析/">数据分析</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据结构与算法/">数据结构与算法</a><span class="category-list-count">2</span></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java容器/">Java容器</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发/">Java并发</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java虚拟机/">Java虚拟机</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据分析/">数据分析</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据结构与算法/">数据结构与算法</a><span class="category-list-count">2</span></li></ul>
         </div>
     </div>
 
@@ -916,7 +917,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">归档</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -925,7 +926,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">标签</h3>
         <div class="widget">
-            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java容器/">Java容器</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java并发/">Java并发</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java虚拟机/">Java虚拟机</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据分析/">数据分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构与算法/">数据结构与算法</a><span class="tag-list-count">2</span></li></ul>
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java容器/">Java容器</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java并发/">Java并发</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java虚拟机/">Java虚拟机</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据分析/">数据分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构与算法/">数据结构与算法</a><span class="tag-list-count">2</span></li></ul>
         </div>
     </div>
 
@@ -934,7 +935,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">标签云</h3>
         <div class="widget tagcloud">
-            <a href="/tags/Java容器/" style="font-size: 13.33px;">Java容器</a> <a href="/tags/Java并发/" style="font-size: 20px;">Java并发</a> <a href="/tags/Java虚拟机/" style="font-size: 16.67px;">Java虚拟机</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/数据分析/" style="font-size: 10px;">数据分析</a> <a href="/tags/数据结构与算法/" style="font-size: 13.33px;">数据结构与算法</a>
+            <a href="/tags/Java容器/" style="font-size: 15px;">Java容器</a> <a href="/tags/Java并发/" style="font-size: 20px;">Java并发</a> <a href="/tags/Java虚拟机/" style="font-size: 17.5px;">Java虚拟机</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/数据分析/" style="font-size: 10px;">数据分析</a> <a href="/tags/数据结构与算法/" style="font-size: 12.5px;">数据结构与算法</a>
         </div>
     </div>
 
