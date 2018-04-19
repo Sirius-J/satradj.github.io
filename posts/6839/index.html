@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="我在万达摆地摊&#39;s blog">
 <meta property="og:description" content="什么是动态代理问题引入有这样一个类： 1234567public class Hello &amp;#123;    public void say() &amp;#123;        System.out.println(&quot;hello world&quot;);    &amp;#125;&amp;#125; 现在有一个需求：需要在Hello类运行say()方法前后使用日志记录下运行的时间戳，该怎么做？">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-04-19T06:47:33.106Z">
+<meta property="og:updated_time" content="2018-04-19T08:00:28.331Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JDK动态代理的实现">
 <meta name="twitter:description" content="什么是动态代理问题引入有这样一个类： 1234567public class Hello &amp;#123;    public void say() &amp;#123;        System.out.println(&quot;hello world&quot;);    &amp;#125;&amp;#125; 现在有一个需求：需要在Hello类运行say()方法前后使用日志记录下运行的时间戳，该怎么做？">
@@ -255,7 +255,7 @@ ga('send', 'pageview');
 <p>然后创建我们的装饰器，为HelloImpl的say方法添加“修饰”代码：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloDecorator</span> <span class="keyword">implements</span> <span class="title">Hello</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Hello hello;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HelloDecorator</span><span class="params">(Hello hello)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.hello = hello;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">say</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(System.currentTimeMillis());</span><br><span class="line">        <span class="keyword">this</span>.hello.say();</span><br><span class="line">        System.out.println(System.currentTimeMillis());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这样，我们在创建HelloDecorator装饰器的时候，只需将实现了Hello接口的实例对象作为参数传给装饰器，调用装饰器的say()方法就可以实现为say()方法添加日志记录的逻辑了。</p>
-<p>这个时候我们虽然是实现了对于所有实现了Hello接口的类的say()方法的日志记录，但是我们如果还需要为goodBey()方法记录日志呢？若是有一千个方法需要记录日志呢？</p>
+<p>这个时候我们虽然是实现了对于所有实现了Hello接口的类的say()方法的日志记录，但是我们如果还需要为goodBye()方法记录日志呢？若是有一千个方法需要记录日志呢？</p>
 <p>这个时候就需要<strong>动态代理了</strong>，其实动态代理的本质就是：<strong>动态的生成一个类实现某个接口，为接口的每一个方法添加一个固定的逻辑。</strong></p>
 <h2 id="JDK的动态代理"><a href="#JDK的动态代理" class="headerlink" title="JDK的动态代理"></a>JDK的动态代理</h2><p>在分析JDK动态代理之前，我们先来看下JDK的动态代理是怎么使用的。</p>
 <p>还是以上面的例子为例：我们需要在一个say()方法运行前后为其添加日志记录。</p>
