@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://satra.tk/posts/46171/Callback.jpg">
 <meta property="og:image" content="http://satra.tk/posts/46171/CallbackFilter.jpg">
 <meta property="og:image" content="http://satra.tk/posts/46171/cglib_invocation.png">
-<meta property="og:updated_time" content="2018-06-06T04:15:27.914Z">
+<meta property="og:updated_time" content="2018-10-05T06:43:20.302Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring aop源码分析">
 <meta name="twitter:description" content="开头aop部分的解析器由AopNamespaceHandler注册，其init方法: 123456@Overridepublic void init() &amp;#123;    registerBeanDefinitionParser(&quot;config&quot;, new ConfigBeanDefinitionParser());    registerBeanDefinitionParser(&quot;aspect">
@@ -177,7 +177,7 @@
         </div>
         <div class="article-info profile-block">
             <div class="article-info-block">
-                29
+                32
                 <span>文章</span>
             </div>
             <div class="article-info-block">
@@ -248,7 +248,7 @@
         <div class="article-entry" itemprop="articleBody">
         
             
-            <h1 id="开头"><a href="#开头" class="headerlink" title="开头"></a>开头</h1><p>aop部分的解析器由AopNamespaceHandler注册，其init方法:</p>
+            <h1 id="开头"><a href="#开头" class="headerlink" title="开头"></a>开头</h1><p>aop部分的解析器由<code>AopNamespaceHandler</code>注册，其<code>init</code>方法:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    registerBeanDefinitionParser(<span class="string">"config"</span>, <span class="keyword">new</span> ConfigBeanDefinitionParser());</span><br><span class="line">    registerBeanDefinitionParser(<span class="string">"aspectj-autoproxy"</span>, <span class="keyword">new</span> AspectJAutoProxyBeanDefinitionParser());</span><br><span class="line">    registerBeanDefinitionDecorator(<span class="string">"scoped-proxy"</span>, <span class="keyword">new</span> ScopedProxyBeanDefinitionDecorator());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
 <h1 id="aop-config"><a href="#aop-config" class="headerlink" title="aop:config"></a>aop:config</h1><p>此标签用以配置pointcut, advisor, aspect，实例:</p>
@@ -256,7 +256,7 @@
 <p>ConfigBeanDefinitionParser.parse:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> BeanDefinition <span class="title">parse</span><span class="params">(Element element, ParserContext parserContext)</span> </span>&#123;</span><br><span class="line">    CompositeComponentDefinition compositeDef =</span><br><span class="line">            <span class="keyword">new</span> CompositeComponentDefinition(element.getTagName(), </span><br><span class="line">            parserContext.extractSource(element));</span><br><span class="line">    parserContext.pushContainingComponent(compositeDef);</span><br><span class="line">    <span class="comment">// 是否生成代理类</span></span><br><span class="line">    configureAutoProxyCreator(parserContext, element);</span><br><span class="line">    List&lt;Element&gt; childElts = DomUtils.getChildElements(element);</span><br><span class="line">    <span class="keyword">for</span> (Element elt: childElts) &#123;</span><br><span class="line">        String localName = parserContext.getDelegate().getLocalName(elt);</span><br><span class="line">        <span class="keyword">if</span> (POINTCUT.equals(localName)) &#123;</span><br><span class="line">            parsePointcut(elt, parserContext);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (ADVISOR.equals(localName)) &#123;</span><br><span class="line">            parseAdvisor(elt, parserContext);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (ASPECT.equals(localName)) &#123;</span><br><span class="line">            parseAspect(elt, parserContext);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    parserContext.popAndRegisterContainingComponent();</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><p>解析的过程主要分为以下几个部分。</p>
-<h3 id="proxy-target-class-amp-expose-proxy"><a href="#proxy-target-class-amp-expose-proxy" class="headerlink" title="proxy-target-class &amp; expose-proxy"></a>proxy-target-class &amp; expose-proxy</h3><p>对应着aop:config的两个属性，前者代表是否为被代理这生成CGLIB子类，默认false，只为接口生成代理子类(话说如果不生成子类那么怎么拦截?)。后者代表是否将代理bean暴露给用户，如果暴露，可以通过Spring AopContext类获得，默认不暴露。</p>
+<h3 id="proxy-target-class-amp-expose-proxy"><a href="#proxy-target-class-amp-expose-proxy" class="headerlink" title="proxy-target-class &amp; expose-proxy"></a>proxy-target-class &amp; expose-proxy</h3><p>对应着<code>aop:config</code>的两个属性，前者代表是否为被代理这生成CGLIB子类，默认false，只为接口生成代理子类(话说如果不生成子类那么怎么拦截?)。后者代表是否将代理bean暴露给用户，如果暴露，可以通过Spring AopContext类获得，默认不暴露。</p>
 <p>解析的过程无非就是属性的读取，不再详细说明。</p>
 <h3 id="aop-pointcut"><a href="#aop-pointcut" class="headerlink" title="aop:pointcut"></a>aop:pointcut</h3><p>pointcut的解析是一个生成一个BeanDefinition并将其id, expression等属性保存在BeanDefinition中。注意以下几点:</p>
 <ul>
@@ -271,10 +271,10 @@
 <p>advisor概念是Spring独有的，来自于上古时代，应该是较早时候的aop概念的实现: <a href="http://aopalliance.sourceforge.net/" target="_blank" rel="noopener">AOP Alliance (Java/J2EE AOP standards)</a>。Spring官方的说法: <a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/html/aop.html#aop-schema-advisors" target="_blank" rel="noopener">aop-schema-advisors</a>。</p>
 <p>其相关的包/类就在spring-aop下:</p>
 <p><img src="aopalliance.png" alt="aopalliance包"></p>
-<p>advice-ref是必须的属性，<strong>并且这里的advice必须实现org.aopalliance.aop.Advice的子接口</strong>。这些子接口指的什么呢，见Spring官方文档: <a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/html/aop-api.html#aop-api-advice-types" target="_blank" rel="noopener">aop-api-advice-types</a>。比如org.aopalliance.intercept.MethodInterceptor。</p>
+<p>advice-ref是必须的属性，<strong>并且这里的advice必须实现org.aopalliance.aop.Advice的子接口</strong>。这些子接口指的什么呢，见Spring官方文档: <a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/html/aop-api.html#aop-api-advice-types" target="_blank" rel="noopener">aop-api-advice-types</a>。比如<code>org.aopalliance.intercept.MethodInterceptor</code>。</p>
 <p>最常见的用途就是结合事务使用:</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">tx:advice</span> <span class="attr">id</span>=<span class="string">"txAdvice"</span> <span class="attr">transaction-manager</span>=<span class="string">"transactionManager"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tx:attributes</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">tx:method</span> <span class="attr">name</span>=<span class="string">"get*"</span> <span class="attr">read-only</span>=<span class="string">"true"</span> <span class="attr">propagation</span>=<span class="string">"NOT_SUPPORTED"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">tx:method</span> <span class="attr">name</span>=<span class="string">"find*"</span> <span class="attr">read-only</span>=<span class="string">"true"</span> <span class="attr">propagation</span>=<span class="string">"NOT_SUPPORTED"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">tx:method</span> <span class="attr">name</span>=<span class="string">"*"</span> <span class="attr">propagation</span>=<span class="string">"REQUIRED"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">tx:attributes</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">tx:advice</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:pointcut</span> <span class="attr">expression</span>=<span class="string">"execution(* exam.service..*.*(..))"</span> <span class="attr">id</span>=<span class="string">"transaction"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:advisor</span> <span class="attr">advice-ref</span>=<span class="string">"txAdvice"</span> <span class="attr">pointcut-ref</span>=<span class="string">"transaction"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>解析的套路和楼上类似，只不过此处的beanClass是DefaultBeanFactoryPointcutAdvisor，其类图:</p>
+<p>解析的套路和楼上类似，只不过此处的beanClass是<code>DefaultBeanFactoryPointcutAdvisor</code>，其类图:</p>
 <p><img src="DefaultBeanFactoryPointcutAdvisor.jpg" alt="DefaultBeanFactoryPointcutAdvisor类图"></p>
 <p>另外注意对于pointcut和pointcut-ref两者处理的区别，对于pointcut属性，Spring会同样创建一个AspectJExpressionPointcut类型的BeanDefinition，对于pointcut-ref会生成一个RuntimeBeanReference对象指向原pointcut的引用。此类的类图:</p>
 <p><img src="RuntimeBeanReference.jpg" alt="RuntimeBeanReference类图"></p>
@@ -558,6 +558,33 @@
                         
                         <div class="item-inner">
                             <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/posts/15220/" class="title">spring mvc源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-10-05T07:03:57.000Z" itemprop="datePublished">2018-10-05</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/posts/3531/" class="title">spring transaction源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-10-05T06:57:50.000Z" itemprop="datePublished">2018-10-05</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/posts/24249/" class="title">spring task源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-10-05T06:40:31.000Z" itemprop="datePublished">2018-10-05</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
                             <p class="item-title"><a href="/posts/59179/" class="title">spring context源码分析</a></p>
                             <p class="item-date"><time datetime="2018-06-06T15:19:43.000Z" itemprop="datePublished">2018-06-06</time></p>
                         </div>
@@ -572,33 +599,6 @@
                         </div>
                     </li>
                 
-                    <li>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
-                            <p class="item-title"><a href="/posts/60270/" class="title">spring core源码分析</a></p>
-                            <p class="item-date"><time datetime="2018-06-06T03:50:05.000Z" itemprop="datePublished">2018-06-06</time></p>
-                        </div>
-                    </li>
-                
-                    <li>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/Java/">Java</a></p>
-                            <p class="item-title"><a href="/posts/6839/" class="title">JDK动态代理的实现</a></p>
-                            <p class="item-date"><time datetime="2018-04-13T08:02:31.000Z" itemprop="datePublished">2018-04-13</time></p>
-                        </div>
-                    </li>
-                
-                    <li>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/Java容器/">Java容器</a></p>
-                            <p class="item-title"><a href="/posts/53527/" class="title">Java容器源码分析之HashMap与HashSet</a></p>
-                            <p class="item-date"><time datetime="2018-04-07T05:00:57.000Z" itemprop="datePublished">2018-04-07</time></p>
-                        </div>
-                    </li>
-                
             </ul>
         </div>
     </div>
@@ -608,7 +608,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">分类</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java容器/">Java容器</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发/">Java并发</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java虚拟机/">Java虚拟机</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据分析/">数据分析</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据结构与算法/">数据结构与算法</a><span class="category-list-count">2</span></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java容器/">Java容器</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发/">Java并发</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java虚拟机/">Java虚拟机</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据分析/">数据分析</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据结构与算法/">数据结构与算法</a><span class="category-list-count">2</span></li></ul>
         </div>
     </div>
 
@@ -617,7 +617,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">归档</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -626,7 +626,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">标签</h3>
         <div class="widget">
-            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java容器/">Java容器</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java并发/">Java并发</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java虚拟机/">Java虚拟机</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据分析/">数据分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构与算法/">数据结构与算法</a><span class="tag-list-count">2</span></li></ul>
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java容器/">Java容器</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java并发/">Java并发</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java虚拟机/">Java虚拟机</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据分析/">数据分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构与算法/">数据结构与算法</a><span class="tag-list-count">2</span></li></ul>
         </div>
     </div>
 
@@ -635,7 +635,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">标签云</h3>
         <div class="widget tagcloud">
-            <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java容器/" style="font-size: 14px;">Java容器</a> <a href="/tags/Java并发/" style="font-size: 20px;">Java并发</a> <a href="/tags/Java虚拟机/" style="font-size: 18px;">Java虚拟机</a> <a href="/tags/spring/" style="font-size: 16px;">spring</a> <a href="/tags/数据分析/" style="font-size: 10px;">数据分析</a> <a href="/tags/数据结构与算法/" style="font-size: 12px;">数据结构与算法</a>
+            <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java容器/" style="font-size: 14px;">Java容器</a> <a href="/tags/Java并发/" style="font-size: 20px;">Java并发</a> <a href="/tags/Java虚拟机/" style="font-size: 16px;">Java虚拟机</a> <a href="/tags/spring/" style="font-size: 18px;">spring</a> <a href="/tags/数据分析/" style="font-size: 10px;">数据分析</a> <a href="/tags/数据结构与算法/" style="font-size: 12px;">数据结构与算法</a>
         </div>
     </div>
 

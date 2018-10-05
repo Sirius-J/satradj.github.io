@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>spring task源码分析 | 我在万达摆地摊&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="开头从功能上来说，spring-task这个组件主要包括了两个/两种功能:  任务的定时调度/执行，对应xml配置的task:scheduler和task:scheduled-tasks标签。 方法异步执行，对应xml配置的task:executor标签。  task:annotation-driven标签被以上两种功能共有。下面就这两种功能分别进行说明。">
+<meta name="keywords" content="spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring task源码分析">
+<meta property="og:url" content="http://satra.tk/posts/24249/index.html">
+<meta property="og:site_name" content="我在万达摆地摊&#39;s blog">
+<meta property="og:description" content="开头从功能上来说，spring-task这个组件主要包括了两个/两种功能:  任务的定时调度/执行，对应xml配置的task:scheduler和task:scheduled-tasks标签。 方法异步执行，对应xml配置的task:executor标签。  task:annotation-driven标签被以上两种功能共有。下面就这两种功能分别进行说明。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://satra.tk/posts/24249/scheduled-tasks.png">
+<meta property="og:image" content="http://satra.tk/posts/24249/Task.jpg">
+<meta property="og:image" content="http://satra.tk/posts/24249/ContextLifecycleScheduledTaskRegistrar.jpg">
+<meta property="og:image" content="http://satra.tk/posts/24249/TaskScheduler.jpg">
+<meta property="og:image" content="http://satra.tk/posts/24249/Trigger.jpg">
+<meta property="og:image" content="http://satra.tk/posts/24249/ReschedulingRunnable.jpg">
+<meta property="og:updated_time" content="2018-10-05T06:55:41.216Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spring task源码分析">
+<meta name="twitter:description" content="开头从功能上来说，spring-task这个组件主要包括了两个/两种功能:  任务的定时调度/执行，对应xml配置的task:scheduler和task:scheduled-tasks标签。 方法异步执行，对应xml配置的task:executor标签。  task:annotation-driven标签被以上两种功能共有。下面就这两种功能分别进行说明。">
+<meta name="twitter:image" content="http://satra.tk/posts/24249/scheduled-tasks.png">
+    
+
+    
+
+    
+        <link rel="icon" href="/img/logo.jpg" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                
+                <span class="site-title">我在万达摆地摊&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/books">书单</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/img/logo.jpg" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/books">书单</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/img/logo.jpg" />
+            <h2 id="name">我在万达摆地摊</h2>
+            <h3 id="title">Java Developer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>ShangHai, China</span>
+            <a id="follow" target="_blank" href="https://github.com/satradj/">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                32
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                7
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/satradj/" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-spring-task源码分析" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            spring task源码分析
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/posts/24249/">
+            <time datetime="2018-10-05T06:40:31.000Z" itemprop="datePublished">2018-10-05</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/spring/">spring</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/spring/">spring</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h1 id="开头"><a href="#开头" class="headerlink" title="开头"></a>开头</h1><p>从功能上来说，spring-task这个组件主要包括了两个/两种功能:</p>
+<ul>
+<li>任务的定时调度/执行，对应xml配置的task:scheduler和task:scheduled-tasks标签。</li>
+<li>方法异步执行，对应xml配置的task:executor标签。</li>
+</ul>
+<p>task:annotation-driven标签被以上两种功能共有。下面就这两种功能分别进行说明。</p>
+<a id="more"></a>
+<h1 id="定时器"><a href="#定时器" class="headerlink" title="定时器"></a>定时器</h1><h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><p>以XML作为示例，基于注解的也是一样的。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">task:scheduler</span> <span class="attr">id</span>=<span class="string">"scheduler"</span> <span class="attr">pool-size</span>=<span class="string">"3"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"task"</span> <span class="attr">class</span>=<span class="string">"task.Task"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">task:scheduled-tasks</span> <span class="attr">scheduler</span>=<span class="string">"scheduler"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">task:scheduled</span> <span class="attr">ref</span>=<span class="string">"task"</span> <span class="attr">method</span>=<span class="string">"print"</span> <span class="attr">cron</span>=<span class="string">"0/5 * * * * ?"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">task:scheduled-tasks</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>定义了一个定时任务，每隔5秒执行Task的print方法，Task:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Task</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"print执行"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>关于cron表达式可以参考:</p>
+<p><a href="http://blog.csdn.net/u011116672/article/details/52517247" target="_blank" rel="noopener">深入浅出Spring task定时任务</a></p>
+<h2 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h2><h3 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h3><p>此部分的解析器注册由TaskNamespaceHandler完成:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.registerBeanDefinitionParser(<span class="string">"annotation-driven"</span>, <span class="keyword">new</span> AnnotationDrivenBeanDefinitionParser());</span><br><span class="line">    <span class="keyword">this</span>.registerBeanDefinitionParser(<span class="string">"executor"</span>, <span class="keyword">new</span> ExecutorBeanDefinitionParser());</span><br><span class="line">    <span class="keyword">this</span>.registerBeanDefinitionParser(<span class="string">"scheduled-tasks"</span>, <span class="keyword">new</span> ScheduledTasksBeanDefinitionParser());</span><br><span class="line">    <span class="keyword">this</span>.registerBeanDefinitionParser(<span class="string">"scheduler"</span>, <span class="keyword">new</span> SchedulerBeanDefinitionParser());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="scheduler"><a href="#scheduler" class="headerlink" title="scheduler"></a>scheduler</h3><p>SchedulerBeanDefinitionParser源码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> String <span class="title">getBeanClassName</span><span class="params">(Element element)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doParse</span><span class="params">(Element element, BeanDefinitionBuilder builder)</span> </span>&#123;</span><br><span class="line">    String poolSize = element.getAttribute(<span class="string">"pool-size"</span>);</span><br><span class="line">    <span class="keyword">if</span> (StringUtils.hasText(poolSize)) &#123;</span><br><span class="line">        builder.addPropertyValue(<span class="string">"poolSize"</span>, poolSize);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于SchedulerBeanDefinitionParser是AbstractSingleBeanDefinitionParser的子类，所以Spring将task:scheduler标签解析为一个BeanDefinition。其beanClass为org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler。</p>
+<h3 id="scheduled-tasks"><a href="#scheduled-tasks" class="headerlink" title="scheduled-tasks"></a>scheduled-tasks</h3><p>其解析的源码较长，在此不再贴出，解析之后形成的BeanDefinition结构如下图:</p>
+<p><img src="scheduled-tasks.png" alt="scheduled-tasks结构图"></p>
+<p>taskScheduler属性即指向task:scheduler标签，如果没有配置，此属性不存在。</p>
+<p>Spring将每一个task:scheduled标签解析为一个Task(的子类)，其类图如下:</p>
+<p><img src="Task.jpg" alt="Task类图"></p>
+<p>很明显可以看出，任务的类型是由cron, fixed-delay, fixed-rate, trigger四个属性决定的，fixed-delay和fixed-rate为IntervalTask。</p>
+<p>注意一点: <strong>四种任务集合并不是互斥的</strong>。比如说一个task:scheduled标签同时配置了cron和trigger属性，那么此标签会导致生成两个beanClass分别为CronTask何TriggerTask的BeanDefinition产生，并分别被放到cronTasksList和triggerTasksList中。</p>
+<p>从图中可以看出，task:scheduled的method和ref属性也被包装成了一个BeanDefinition, 其beanClass为org.springframework.scheduling.support.ScheduledMethodRunnable.</p>
+<h2 id="调度执行"><a href="#调度执行" class="headerlink" title="调度执行"></a>调度执行</h2><p>入口便是ContextLifecycleScheduledTaskRegistrar，类图:</p>
+<p><img src="ContextLifecycleScheduledTaskRegistrar.jpg" alt="ContextLifecycleScheduledTaskRegistrar类图"></p>
+<p>ContextLifecycleScheduledTaskRegistrar只实现了afterSingletonsInstantiated方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterSingletonsInstantiated</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    scheduleTasks();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ScheduledTaskRegistrar.scheduleTasks:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">scheduleTasks</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     <span class="comment">// shcheduler初始化</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.taskScheduler == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.localExecutor = Executors.newSingleThreadScheduledExecutor();</span><br><span class="line">        <span class="keyword">this</span>.taskScheduler = <span class="keyword">new</span> ConcurrentTaskScheduler(<span class="keyword">this</span>.localExecutor);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.triggerTasks != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (TriggerTask task : <span class="keyword">this</span>.triggerTasks) &#123;</span><br><span class="line">            addScheduledTask(scheduleTriggerTask(task));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.cronTasks != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (CronTask task : <span class="keyword">this</span>.cronTasks) &#123;</span><br><span class="line">            addScheduledTask(scheduleCronTask(task));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.fixedRateTasks != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (IntervalTask task : <span class="keyword">this</span>.fixedRateTasks) &#123;</span><br><span class="line">            addScheduledTask(scheduleFixedRateTask(task));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.fixedDelayTasks != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (IntervalTask task : <span class="keyword">this</span>.fixedDelayTasks) &#123;</span><br><span class="line">            addScheduledTask(scheduleFixedDelayTask(task));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="scheduler初始化"><a href="#scheduler初始化" class="headerlink" title="scheduler初始化"></a>scheduler初始化</h3><p>可见，如果没有配置task:scheduler，那么在这里将会进行其初始化工作。</p>
+<p>Spring定义了TaskScheduler接口，独立于jdk之外，这样做的目的在于能够同时支持JDK和quartz。对于默认来说，Spring将真正的逻辑全部委托给jdk的Executor。</p>
+<p>TaskScheduler类图:</p>
+<p><img src="TaskScheduler.jpg" alt="TaskScheduler类图"></p>
+<p>ConcurrentTaskExecutor来自另一个继承体系: TaskExecutor，这和spring-task的另一个重要功能，异步执行，这里暂且不表。</p>
+<h3 id="任务调度"><a href="#任务调度" class="headerlink" title="任务调度"></a>任务调度</h3><p>以喜闻乐见的CronTask为例。ScheduledTaskRegistrar.scheduleCronTask:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ScheduledTask <span class="title">scheduleCronTask</span><span class="params">(CronTask task)</span> </span>&#123;</span><br><span class="line">    ScheduledTask scheduledTask = <span class="keyword">this</span>.unresolvedTasks.remove(task);</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.taskScheduler != <span class="keyword">null</span>) &#123;</span><br><span class="line">        scheduledTask.future = <span class="keyword">this</span>.taskScheduler.schedule(task.getRunnable(), task.getTrigger());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (newTask ? scheduledTask : <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Trigger"><a href="#Trigger" class="headerlink" title="Trigger"></a>Trigger</h4><p>可见，Cron也是通过Trigger实现的，在Spring中，Trigger被定义为<strong>决定一个任务的下一次执行时间</strong>。其类图:</p>
+<p><img src="Trigger.jpg" alt="Trigger.jpg"></p>
+<p>那么问题来了，字符串形式的cron表达式是在何时被解析为Trigger的呢?</p>
+<h4 id="Cron解析"><a href="#Cron解析" class="headerlink" title="Cron解析"></a>Cron解析</h4><p>CronTask构造器:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CronTask</span><span class="params">(Runnable runnable, String expression)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(runnable, <span class="keyword">new</span> CronTrigger(expression));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>CronTrigger构造器:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CronTrigger</span><span class="params">(String expression)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.sequenceGenerator = <span class="keyword">new</span> CronSequenceGenerator(expression);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>答案便在CronSequenceGenerator构造器了:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CronSequenceGenerator</span><span class="params">(String expression)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(expression, TimeZone.getDefault());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CronSequenceGenerator</span><span class="params">(String expression, TimeZone timeZone)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.expression = expression;</span><br><span class="line">    <span class="keyword">this</span>.timeZone = timeZone;</span><br><span class="line">    parse(expression);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>具体是如何解析的，不再深入。</p>
+<p>ConcurrentTaskScheduler.schedule:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> ScheduledFuture&lt;?&gt; schedule(Runnable task, Trigger trigger) &#123;</span><br><span class="line">    ErrorHandler errorHandler = (<span class="keyword">this</span>.errorHandler != <span class="keyword">null</span> ? <span class="keyword">this</span>.errorHandler : 			 				TaskUtils.getDefaultErrorHandler(<span class="keyword">true</span>));</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ReschedulingRunnable(task, trigger, <span class="keyword">this</span>.scheduledExecutor, errorHandler).schedule();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="调度"><a href="#调度" class="headerlink" title="调度"></a>调度</h4><p>从上面的源码可以看出，调度是通过ReschedulingRunnable来完成的，其类图:</p>
+<p><img src="ReschedulingRunnable.jpg" alt="ReschedulingRunnable类图"></p>
+<p>schedule方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> ScheduledFuture&lt;?&gt; schedule() &#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>.triggerContextMonitor) &#123;</span><br><span class="line">        <span class="keyword">this</span>.scheduledExecutionTime = <span class="keyword">this</span>.trigger.nextExecutionTime(<span class="keyword">this</span>.triggerContext);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.scheduledExecutionTime == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">long</span> initialDelay = <span class="keyword">this</span>.scheduledExecutionTime.getTime() - System.currentTimeMillis();</span><br><span class="line">        <span class="keyword">this</span>.currentFuture = <span class="keyword">this</span>.executor.schedule(<span class="keyword">this</span>, initialDelay, TimeUnit.MILLISECONDS);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看出，这里设置了在下一次执行窗口调用this(ReschedulingRunnable)，从类图可以看出，ReschedulingRunnable本身实现了Runnable接口，其run方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Date actualExecutionTime = <span class="keyword">new</span> Date();</span><br><span class="line">    <span class="keyword">super</span>.run();</span><br><span class="line">    Date completionTime = <span class="keyword">new</span> Date();</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>.triggerContextMonitor) &#123;</span><br><span class="line">        <span class="keyword">this</span>.triggerContext.update(<span class="keyword">this</span>.scheduledExecutionTime, actualExecutionTime, completionTime);</span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">this</span>.currentFuture.isCancelled()) &#123;</span><br><span class="line">             <span class="comment">//下次调用</span></span><br><span class="line">            schedule();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对我们自定义逻辑的调用是通过super.run实现的:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.delegate.run();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>delegate便是前面提到过的ScheduledMethodRunnable，其run方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ReflectionUtils.makeAccessible(<span class="keyword">this</span>.method);</span><br><span class="line">    <span class="keyword">this</span>.method.invoke(<span class="keyword">this</span>.target);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然这只是针对CronTask的实现，而对于IntervalTask就要简单多了，ScheduledTaskRegistrar.scheduleFixedDelayTask部分源码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ScheduledTask <span class="title">scheduleFixedDelayTask</span><span class="params">(IntervalTask task)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.taskScheduler != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (task.getInitialDelay() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            Date startTime = <span class="keyword">new</span> Date(System.currentTimeMillis() + task.getInitialDelay());</span><br><span class="line">            scheduledTask.future =</span><br><span class="line">            <span class="keyword">this</span>.taskScheduler.scheduleWithFixedDelay(task.getRunnable(),</span><br><span class="line">                                                      startTime, task.getInterval());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            scheduledTask.future =</span><br><span class="line">                    <span class="keyword">this</span>.taskScheduler.scheduleWithFixedDelay(task.getRunnable(), task.getInterval());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (newTask ? scheduledTask : <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>从上面的说明可以看出，Spring其实将核心逻辑委托给了JDK的Executors.newSingleThreadScheduledExecutor()来实现，那么JDK是如何用一个线程来定时执行多个任务的呢?</p>
+<h1 id="异步执行"><a href="#异步执行" class="headerlink" title="异步执行"></a>异步执行</h1><h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>必须以注解的方式进行配置，xml:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">task:executor</span> <span class="attr">id</span>=<span class="string">"executor"</span> <span class="attr">pool-size</span>=<span class="string">"3"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">task:annotation-driven</span> <span class="attr">executor</span>=<span class="string">"executor"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这样在类或方法上加上注解即可:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Async</span>(<span class="string">"executor"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"print执行"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>猜测:</p>
+<p>Spring会为带有@Async的组件生成代理子类实现对原生组件的替换，代理子类将异步执行的方法包装为Task(Runnable)提交到jdk的线程池即可。</p>
+<h1 id="申明"><a href="#申明" class="headerlink" title="申明"></a>申明</h1><p>本文转载自seaswalker的<a href="https://github.com/seaswalker/Spring" target="_blank" rel="noopener">github</a>，<a href="https://github.com/seaswalker/Spring/issues/1" target="_blank" rel="noopener">转载授权</a>，由<a href="https://satradj.github.io/" target="_blank" rel="noopener">我在万达摆地摊</a>整理发布。</p>
+
+            
+            
+
+            
+                <div class="article-copyright">
+                    <p>本文首发于<a href="http://satra.tk/posts/24249/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
+                </div>
+            
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/posts/3531/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    spring transaction源码分析
+                
+            </div>
+        </a>
+    
+    
+        <a href="/posts/59179/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">spring context源码分析</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="no-thumbnail">
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/posts/15220/" class="title">spring mvc源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-10-05T07:03:57.000Z" itemprop="datePublished">2018-10-05</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/posts/3531/" class="title">spring transaction源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-10-05T06:57:50.000Z" itemprop="datePublished">2018-10-05</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/posts/24249/" class="title">spring task源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-10-05T06:40:31.000Z" itemprop="datePublished">2018-10-05</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/posts/59179/" class="title">spring context源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-06-06T15:19:43.000Z" itemprop="datePublished">2018-06-06</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/posts/46171/" class="title">spring aop源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-06-06T04:08:31.000Z" itemprop="datePublished">2018-06-06</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java容器/">Java容器</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发/">Java并发</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java虚拟机/">Java虚拟机</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据分析/">数据分析</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据结构与算法/">数据结构与算法</a><span class="category-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java容器/">Java容器</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java并发/">Java并发</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java虚拟机/">Java虚拟机</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据分析/">数据分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构与算法/">数据结构与算法</a><span class="tag-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java容器/" style="font-size: 14px;">Java容器</a> <a href="/tags/Java并发/" style="font-size: 20px;">Java并发</a> <a href="/tags/Java虚拟机/" style="font-size: 16px;">Java虚拟机</a> <a href="/tags/spring/" style="font-size: 18px;">spring</a> <a href="/tags/数据分析/" style="font-size: 10px;">数据分析</a> <a href="/tags/数据结构与算法/" style="font-size: 12px;">数据结构与算法</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://woquanke.com/">全科</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 我在万达摆地摊
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
