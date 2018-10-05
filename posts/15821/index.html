@@ -9,16 +9,16 @@
 <meta name="keywords" content="Java并发">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java并发之原子类源码分析(以AtomicInteger为例)">
-<meta property="og:url" content="http://satra.tk/posts/15821/index.html">
+<meta property="og:url" content="https://satra.tk/posts/15821/index.html">
 <meta property="og:site_name" content="我在万达摆地摊&#39;s blog">
 <meta property="og:description" content="什么是原子类在我之前的博客文章中介绍了JVM的内存模型，JVM内存模型规定了对一个变量的操作分为八步，这八步分别是：Lock（锁定）、unlock(解锁)、read（读取）、load（载入）、use（使用）、assign（赋值）、store（存储）、write（写入）；也就是说，对于一个数的操作是分为八步完成的，即对一个数的操作不是一个原子操作，如：i++，在代码层面就一行代码，看似是原子操作，实">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://satra.tk/posts/15821/1.png">
+<meta property="og:image" content="https://satra.tk/posts/15821/1.png">
 <meta property="og:updated_time" content="2018-04-19T06:47:33.199Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java并发之原子类源码分析(以AtomicInteger为例)">
 <meta name="twitter:description" content="什么是原子类在我之前的博客文章中介绍了JVM的内存模型，JVM内存模型规定了对一个变量的操作分为八步，这八步分别是：Lock（锁定）、unlock(解锁)、read（读取）、load（载入）、use（使用）、assign（赋值）、store（存储）、write（写入）；也就是说，对于一个数的操作是分为八步完成的，即对一个数的操作不是一个原子操作，如：i++，在代码层面就一行代码，看似是原子操作，实">
-<meta name="twitter:image" content="http://satra.tk/posts/15821/1.png">
+<meta name="twitter:image" content="https://satra.tk/posts/15821/1.png">
     
 
     
@@ -261,7 +261,7 @@
 
             
                 <div class="article-copyright">
-                    <p>本文首发于<a href="http://satra.tk/posts/15821/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
+                    <p>本文首发于<a href="https://satra.tk/posts/15821/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
                 </div>
             
         

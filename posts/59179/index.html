@@ -9,40 +9,40 @@
 <meta name="keywords" content="spring">
 <meta property="og:type" content="article">
 <meta property="og:title" content="spring context源码分析">
-<meta property="og:url" content="http://satra.tk/posts/59179/index.html">
+<meta property="og:url" content="https://satra.tk/posts/59179/index.html">
 <meta property="og:site_name" content="我在万达摆地摊&#39;s blog">
 <meta property="og:description" content="开头入口方法在BeanDefinitionParserDelegate.parseCustomElement： 1return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://satra.tk/posts/59179/Comparator.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/ContextAnnotationAutowireCandidateResolver.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/ConfigurationClassPostProcessor.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/AutowiredAnnotationBeanPostProcessor.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/CommonAnnotationBeanPostProcessor.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/EventListenerMethodProcessor.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/DefaultEventListenerFactory.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/CompositeComponentDefinition.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/context_annotation_stack.png">
-<meta property="og:image" content="http://satra.tk/posts/59179/ImportAwareBeanPostProcessor.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/BeanNameGenerator.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/required_test.png">
-<meta property="og:image" content="http://satra.tk/posts/59179/ScopeMetadataResolver.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/MetadataReader.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/AnnotationMetadataReadingVisitor.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/ScannedGenericBeanDefinition.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/PropertyOverrideBeanDefinitionParser.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/PropertyOverrideConfigurer.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/PropertySourcesPlaceholderConfigurer.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/LoadTimeWeaver.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/AspectJWeavingEnabler.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/AnnotationBeanConfigurerAspect.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/LoadTimeWeaverAwareProcessor.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/ClassPreProcessorAgentAdapter.jpg">
-<meta property="og:image" content="http://satra.tk/posts/59179/aop_xml_parse.png">
+<meta property="og:image" content="https://satra.tk/posts/59179/Comparator.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/ContextAnnotationAutowireCandidateResolver.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/ConfigurationClassPostProcessor.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/AutowiredAnnotationBeanPostProcessor.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/CommonAnnotationBeanPostProcessor.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/EventListenerMethodProcessor.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/DefaultEventListenerFactory.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/CompositeComponentDefinition.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/context_annotation_stack.png">
+<meta property="og:image" content="https://satra.tk/posts/59179/ImportAwareBeanPostProcessor.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/BeanNameGenerator.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/required_test.png">
+<meta property="og:image" content="https://satra.tk/posts/59179/ScopeMetadataResolver.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/MetadataReader.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/AnnotationMetadataReadingVisitor.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/ScannedGenericBeanDefinition.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/PropertyOverrideBeanDefinitionParser.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/PropertyOverrideConfigurer.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/PropertySourcesPlaceholderConfigurer.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/LoadTimeWeaver.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/AspectJWeavingEnabler.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/AnnotationBeanConfigurerAspect.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/LoadTimeWeaverAwareProcessor.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/ClassPreProcessorAgentAdapter.jpg">
+<meta property="og:image" content="https://satra.tk/posts/59179/aop_xml_parse.png">
 <meta property="og:updated_time" content="2018-06-06T15:28:10.013Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring context源码分析">
 <meta name="twitter:description" content="开头入口方法在BeanDefinitionParserDelegate.parseCustomElement： 1return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));">
-<meta name="twitter:image" content="http://satra.tk/posts/59179/Comparator.jpg">
+<meta name="twitter:image" content="https://satra.tk/posts/59179/Comparator.jpg">
     
 
     
@@ -684,7 +684,7 @@
 
             
                 <div class="article-copyright">
-                    <p>本文首发于<a href="http://satra.tk/posts/59179/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
+                    <p>本文首发于<a href="https://satra.tk/posts/59179/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
                 </div>
             
         

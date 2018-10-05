@@ -9,16 +9,16 @@
 <meta name="keywords" content="Java并发">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java并发之线程池源码分析">
-<meta property="og:url" content="http://satra.tk/posts/44048/index.html">
+<meta property="og:url" content="https://satra.tk/posts/44048/index.html">
 <meta property="og:site_name" content="我在万达摆地摊&#39;s blog">
 <meta property="og:description" content="为什么需要线程池操作系统中线程的实现有三种，一种是用户级线程，一种是内核支持线程，还有一种是前两种的组合方式。用户级线程是在用户空间实现的，而内核级线程是在OS内核空间实现的。JVM对于线程并没有明确的定义是用户线程还是内核线程，但Java常用的JVM HotSpot，它都是使用1:1线程模型即内核线程，线程的调度完全交给了操作系统内核；所以在HotSpot上创建线程需要操作系统从用户态切换到内核">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://satra.tk/posts/44048/1.png">
+<meta property="og:image" content="https://satra.tk/posts/44048/1.png">
 <meta property="og:updated_time" content="2018-04-19T06:47:33.225Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java并发之线程池源码分析">
 <meta name="twitter:description" content="为什么需要线程池操作系统中线程的实现有三种，一种是用户级线程，一种是内核支持线程，还有一种是前两种的组合方式。用户级线程是在用户空间实现的，而内核级线程是在OS内核空间实现的。JVM对于线程并没有明确的定义是用户线程还是内核线程，但Java常用的JVM HotSpot，它都是使用1:1线程模型即内核线程，线程的调度完全交给了操作系统内核；所以在HotSpot上创建线程需要操作系统从用户态切换到内核">
-<meta name="twitter:image" content="http://satra.tk/posts/44048/1.png">
+<meta name="twitter:image" content="https://satra.tk/posts/44048/1.png">
     
 
     
@@ -327,7 +327,7 @@
 
             
                 <div class="article-copyright">
-                    <p>本文首发于<a href="http://satra.tk/posts/44048/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
+                    <p>本文首发于<a href="https://satra.tk/posts/44048/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
                 </div>
             
         

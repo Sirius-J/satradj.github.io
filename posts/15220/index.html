@@ -9,46 +9,46 @@
 <meta name="keywords" content="spring">
 <meta property="og:type" content="article">
 <meta property="og:title" content="spring mvc源码分析">
-<meta property="og:url" content="http://satra.tk/posts/15220/index.html">
+<meta property="og:url" content="https://satra.tk/posts/15220/index.html">
 <meta property="og:site_name" content="我在万达摆地摊&#39;s blog">
 <meta property="og:description" content="初始化spring-mvc的核心便是DispatcherServlet，所以初始化也是围绕其展开的。类图:  Servlet标准定义了init方法是其生命周期的初始化方法。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://satra.tk/posts/15220/DispatcherServlet.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/ApplicationContextInitializer.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/XmlWebApplicationContext.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/mvc-annotation.png">
-<meta property="og:image" content="http://satra.tk/posts/15220/MultipartResolver.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/ThemeResolver.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/RequestToViewNameTranslator.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/FlashMapManager.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/RequestMappingHandlerMapping.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/MappingRegistry.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/HandlerMethodMappingNamingStrategy.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/MappedInterceptor.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/RequestMappingHandlerAdapter.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/HandlerMethodArgumentResolver.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/HandlerMethodReturnValueHandler.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/ParameterNameDiscoverer.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/local_variable_tables.PNG">
-<meta property="og:image" content="http://satra.tk/posts/15220/idea_debug_info.PNG">
-<meta property="og:image" content="http://satra.tk/posts/15220/debug_info_error.PNG">
-<meta property="og:image" content="http://satra.tk/posts/15220/BindingAwareModelMap.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/ModelAndView.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/ViewResolver.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/JstlView.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/HttpMessageConverter.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/mvc_input_output.PNG">
-<meta property="og:image" content="http://satra.tk/posts/15220/HandlerMethodArgumentResolver_all.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/HandlerMethodReturnValueHandler_all.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/ServletModelAttributeMethodProcessor.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/DataBinder.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/WebDataBinderFactory.jpg">
-<meta property="og:image" content="http://satra.tk/posts/15220/Validator.png">
+<meta property="og:image" content="https://satra.tk/posts/15220/DispatcherServlet.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/ApplicationContextInitializer.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/XmlWebApplicationContext.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/mvc-annotation.png">
+<meta property="og:image" content="https://satra.tk/posts/15220/MultipartResolver.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/ThemeResolver.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/RequestToViewNameTranslator.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/FlashMapManager.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/RequestMappingHandlerMapping.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/MappingRegistry.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/HandlerMethodMappingNamingStrategy.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/MappedInterceptor.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/RequestMappingHandlerAdapter.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/HandlerMethodArgumentResolver.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/HandlerMethodReturnValueHandler.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/ParameterNameDiscoverer.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/local_variable_tables.PNG">
+<meta property="og:image" content="https://satra.tk/posts/15220/idea_debug_info.PNG">
+<meta property="og:image" content="https://satra.tk/posts/15220/debug_info_error.PNG">
+<meta property="og:image" content="https://satra.tk/posts/15220/BindingAwareModelMap.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/ModelAndView.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/ViewResolver.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/JstlView.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/HttpMessageConverter.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/mvc_input_output.PNG">
+<meta property="og:image" content="https://satra.tk/posts/15220/HandlerMethodArgumentResolver_all.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/HandlerMethodReturnValueHandler_all.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/ServletModelAttributeMethodProcessor.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/DataBinder.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/WebDataBinderFactory.jpg">
+<meta property="og:image" content="https://satra.tk/posts/15220/Validator.png">
 <meta property="og:updated_time" content="2018-10-05T07:18:47.058Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring mvc源码分析">
 <meta name="twitter:description" content="初始化spring-mvc的核心便是DispatcherServlet，所以初始化也是围绕其展开的。类图:  Servlet标准定义了init方法是其生命周期的初始化方法。">
-<meta name="twitter:image" content="http://satra.tk/posts/15220/DispatcherServlet.jpg">
+<meta name="twitter:image" content="https://satra.tk/posts/15220/DispatcherServlet.jpg">
     
 
     
@@ -613,7 +613,7 @@
 
             
                 <div class="article-copyright">
-                    <p>本文首发于<a href="http://satra.tk/posts/15220/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
+                    <p>本文首发于<a href="https://satra.tk/posts/15220/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
                 </div>
             
         
