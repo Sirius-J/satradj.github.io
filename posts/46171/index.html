@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://satra.tk/posts/46171/Callback.jpg">
 <meta property="og:image" content="https://satra.tk/posts/46171/CallbackFilter.jpg">
 <meta property="og:image" content="https://satra.tk/posts/46171/cglib_invocation.png">
-<meta property="og:updated_time" content="2018-10-05T06:43:20.302Z">
+<meta property="og:updated_time" content="2018-10-05T09:23:31.980Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring aop源码分析">
 <meta name="twitter:description" content="开头aop部分的解析器由AopNamespaceHandler注册，其init方法: 123456@Overridepublic void init() &amp;#123;    registerBeanDefinitionParser(&quot;config&quot;, new ConfigBeanDefinitionParser());    registerBeanDefinitionParser(&quot;aspect">
@@ -501,7 +501,7 @@ ga('send', 'pageview');
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testB</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"testB执行"</span>);</span><br><span class="line">    ((SimpleAopBean) AopContext.currentProxy()).testC();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这里其实是一个ThreadLocal，当Cglib代理子类创建调用链之间便会将代理类设置到其中，DynamicAdvisedInterceptor.intercept相关源码:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.advised.exposeProxy) &#123;</span><br><span class="line">    <span class="comment">// Make invocation available if necessary.</span></span><br><span class="line">    oldProxy = AopContext.setCurrentProxy(proxy);</span><br><span class="line">    setProxyContext = <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="申明"><a href="#申明" class="headerlink" title="申明"></a>申明</h1><p>本文转载自seaswalker的<a href="https://github.com/seaswalker/Spring" target="_blank" rel="noopener">github</a>，<a href="https://github.com/seaswalker/Spring/issues/1" target="_blank" rel="noopener">转载授权</a>，由<a href="https://satradj.github.io/" target="_blank" rel="noopener">我在万达摆地摊</a>整理发布。</p>
+<h1 id="申明"><a href="#申明" class="headerlink" title="申明"></a>申明</h1><p>本文转载自seaswalker的<a href="https://github.com/seaswalker/Spring" target="_blank" rel="noopener">github</a>，<a href="https://github.com/seaswalker/Spring/issues/1" target="_blank" rel="noopener">转载授权</a>，由<a href="https://satra.tk/">我在万达摆地摊</a>整理发布。</p>
 
             
             

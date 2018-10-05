@@ -44,7 +44,7 @@
 <meta property="og:image" content="https://satra.tk/posts/15220/DataBinder.jpg">
 <meta property="og:image" content="https://satra.tk/posts/15220/WebDataBinderFactory.jpg">
 <meta property="og:image" content="https://satra.tk/posts/15220/Validator.png">
-<meta property="og:updated_time" content="2018-10-05T07:18:47.058Z">
+<meta property="og:updated_time" content="2018-10-05T09:24:01.307Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring mvc源码分析">
 <meta name="twitter:description" content="初始化spring-mvc的核心便是DispatcherServlet，所以初始化也是围绕其展开的。类图:  Servlet标准定义了init方法是其生命周期的初始化方法。">
@@ -617,7 +617,7 @@ ga('send', 'pageview');
 <p>虽然ServletModelAttributeMethodProcessor位于RequestResponseBodyMethodProcessor之前，但构造器参数为false说明了此解析器必须要求参数被@ModelAttribute注解标注，其实在最后还有一个不需要注解的解析器被添加:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Catch-all</span></span><br><span class="line">resolvers.add(<span class="keyword">new</span> ServletModelAttributeMethodProcessor(<span class="keyword">true</span>));</span><br></pre></td></tr></table></figure>
 <p>至此，真相大白。</p>
-<h1 id="申明"><a href="#申明" class="headerlink" title="申明"></a>申明</h1><p>本文转载自seaswalker的<a href="https://github.com/seaswalker/Spring" target="_blank" rel="noopener">github</a>，<a href="https://github.com/seaswalker/Spring/issues/1" target="_blank" rel="noopener">转载授权</a>，由<a href="https://satradj.github.io/" target="_blank" rel="noopener">我在万达摆地摊</a>整理发布。</p>
+<h1 id="申明"><a href="#申明" class="headerlink" title="申明"></a>申明</h1><p>本文转载自seaswalker的<a href="https://github.com/seaswalker/Spring" target="_blank" rel="noopener">github</a>，<a href="https://github.com/seaswalker/Spring/issues/1" target="_blank" rel="noopener">转载授权</a>，由<a href="https://satra.tk/">我在万达摆地摊</a>整理发布。</p>
 
             
             

@@ -19,7 +19,7 @@
 <meta property="og:image" content="https://satra.tk/posts/24249/TaskScheduler.jpg">
 <meta property="og:image" content="https://satra.tk/posts/24249/Trigger.jpg">
 <meta property="og:image" content="https://satra.tk/posts/24249/ReschedulingRunnable.jpg">
-<meta property="og:updated_time" content="2018-10-05T06:55:41.216Z">
+<meta property="og:updated_time" content="2018-10-05T09:24:05.214Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring task源码分析">
 <meta name="twitter:description" content="开头从功能上来说，spring-task这个组件主要包括了两个/两种功能:  任务的定时调度/执行，对应xml配置的task:scheduler和task:scheduled-tasks标签。 方法异步执行，对应xml配置的task:executor标签。  task:annotation-driven标签被以上两种功能共有。下面就这两种功能分别进行说明。">
@@ -318,7 +318,7 @@ ga('send', 'pageview');
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Async</span>(<span class="string">"executor"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"print执行"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>猜测:</p>
 <p>Spring会为带有@Async的组件生成代理子类实现对原生组件的替换，代理子类将异步执行的方法包装为Task(Runnable)提交到jdk的线程池即可。</p>
-<h1 id="申明"><a href="#申明" class="headerlink" title="申明"></a>申明</h1><p>本文转载自seaswalker的<a href="https://github.com/seaswalker/Spring" target="_blank" rel="noopener">github</a>，<a href="https://github.com/seaswalker/Spring/issues/1" target="_blank" rel="noopener">转载授权</a>，由<a href="https://satradj.github.io/" target="_blank" rel="noopener">我在万达摆地摊</a>整理发布。</p>
+<h1 id="申明"><a href="#申明" class="headerlink" title="申明"></a>申明</h1><p>本文转载自seaswalker的<a href="https://github.com/seaswalker/Spring" target="_blank" rel="noopener">github</a>，<a href="https://github.com/seaswalker/Spring/issues/1" target="_blank" rel="noopener">转载授权</a>，由<a href="https://satra.tk/">我在万达摆地摊</a>整理发布。</p>
 
             
             

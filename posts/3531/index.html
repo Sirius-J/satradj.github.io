@@ -20,7 +20,7 @@
 <meta property="og:image" content="https://satra.tk/posts/3531/DriverManagerDataSource.jpg">
 <meta property="og:image" content="https://satra.tk/posts/3531/DataSourceTransactionObject.jpg">
 <meta property="og:image" content="https://satra.tk/posts/3531/Savepoint.jpg">
-<meta property="og:updated_time" content="2018-10-05T07:02:59.637Z">
+<meta property="og:updated_time" content="2018-10-05T09:24:10.307Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring transaction源码分析">
 <meta name="twitter:description" content="配置以最简单的jdbc事务为例: 1234567891011&amp;lt;!-- 数据源以Sping自带为例，每次请求均返回一个新的连接 --&amp;gt;&amp;lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&amp;gt;    &amp;lt;property name=&quot;driverCla">
@@ -399,7 +399,7 @@ ga('send', 'pageview');
 <p><strong>Spring事务的开启实际上是将数据库的自动提交设为false</strong>。</p>
 <h3 id="事务提交-amp-回滚"><a href="#事务提交-amp-回滚" class="headerlink" title="事务提交 &amp; 回滚"></a>事务提交 &amp; 回滚</h3><p>其实就是对jdbc相应方法的封装，不再展开。</p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>事务的本质其实是对数据库自动提交的关闭与开启，传播特性是Spring提出、实现、控制的概念，而隔离级别是对数据库实现的封装。</p>
-<h1 id="申明"><a href="#申明" class="headerlink" title="申明"></a>申明</h1><p>本文转载自seaswalker的<a href="https://github.com/seaswalker/Spring" target="_blank" rel="noopener">github</a>，<a href="https://github.com/seaswalker/Spring/issues/1" target="_blank" rel="noopener">转载授权</a>，由<a href="https://satradj.github.io/" target="_blank" rel="noopener">我在万达摆地摊</a>整理发布。</p>
+<h1 id="申明"><a href="#申明" class="headerlink" title="申明"></a>申明</h1><p>本文转载自seaswalker的<a href="https://github.com/seaswalker/Spring" target="_blank" rel="noopener">github</a>，<a href="https://github.com/seaswalker/Spring/issues/1" target="_blank" rel="noopener">转载授权</a>，由<a href="https://satra.tk/">我在万达摆地摊</a>整理发布。</p>
 
             
             
