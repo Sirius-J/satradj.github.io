@@ -9,37 +9,37 @@
 <meta name="keywords" content="Java并发">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java并发之线程池源码分析">
-<meta property="og:url" content="http://satra.gitee.io/blog/posts/44048/index.html">
+<meta property="og:url" content="http://satra.tk/posts/44048/index.html">
 <meta property="og:site_name" content="我在万达摆地摊&#39;s blog">
 <meta property="og:description" content="为什么需要线程池操作系统中线程的实现有三种，一种是用户级线程，一种是内核支持线程，还有一种是前两种的组合方式。用户级线程是在用户空间实现的，而内核级线程是在OS内核空间实现的。JVM对于线程并没有明确的定义是用户线程还是内核线程，但Java常用的JVM HotSpot，它都是使用1:1线程模型即内核线程，线程的调度完全交给了操作系统内核；所以在HotSpot上创建线程需要操作系统从用户态切换到内核">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://satra.gitee.io/blog/posts/44048/1.png">
+<meta property="og:image" content="http://satra.tk/posts/44048/1.png">
 <meta property="og:updated_time" content="2018-04-19T06:47:33.225Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java并发之线程池源码分析">
 <meta name="twitter:description" content="为什么需要线程池操作系统中线程的实现有三种，一种是用户级线程，一种是内核支持线程，还有一种是前两种的组合方式。用户级线程是在用户空间实现的，而内核级线程是在OS内核空间实现的。JVM对于线程并没有明确的定义是用户线程还是内核线程，但Java常用的JVM HotSpot，它都是使用1:1线程模型即内核线程，线程的调度完全交给了操作系统内核；所以在HotSpot上创建线程需要操作系统从用户态切换到内核">
-<meta name="twitter:image" content="http://satra.gitee.io/blog/posts/44048/1.png">
+<meta name="twitter:image" content="http://satra.tk/posts/44048/1.png">
     
 
     
 
     
-        <link rel="icon" href="/blog/img/logo.jpg" />
+        <link rel="icon" href="/img/logo.jpg" />
     
 
-    <link rel="stylesheet" href="/blog/libs/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/blog/libs/open-sans/styles.css">
-    <link rel="stylesheet" href="/blog/libs/source-code-pro/styles.css">
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
 
-    <link rel="stylesheet" href="/blog/css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 
-    <script src="/blog/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
     
     
-        <link rel="stylesheet" href="/blog/libs/lightgallery/css/lightgallery.min.css">
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
     
     
-        <link rel="stylesheet" href="/blog/libs/justified-gallery/justifiedGallery.min.css">
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
     
     
     
@@ -53,21 +53,21 @@
         <header id="header">
     <div id="header-main" class="header-inner">
         <div class="outer">
-            <a href="/blog/" id="logo">
+            <a href="/" id="logo">
                 
                 <span class="site-title">我在万达摆地摊&#39;s blog</span>
             </a>
             <nav id="main-nav">
                 
-                    <a class="main-nav-link" href="/blog/.">主页</a>
+                    <a class="main-nav-link" href="/.">主页</a>
                 
-                    <a class="main-nav-link" href="/blog/categories">分类</a>
+                    <a class="main-nav-link" href="/categories">分类</a>
                 
-                    <a class="main-nav-link" href="/blog/archives">归档</a>
+                    <a class="main-nav-link" href="/archives">归档</a>
                 
-                    <a class="main-nav-link" href="/blog/books">书单</a>
+                    <a class="main-nav-link" href="/books">书单</a>
                 
-                    <a class="main-nav-link" href="/blog/about">关于</a>
+                    <a class="main-nav-link" href="/about">关于</a>
                 
             </nav>
             
@@ -75,7 +75,7 @@
                 <nav id="sub-nav">
                     <div class="profile" id="profile-nav">
                         <a id="profile-anchor" href="javascript:;">
-                            <img class="avatar" src="/blog/img/logo.jpg" />
+                            <img class="avatar" src="/img/logo.jpg" />
                             <i class="fa fa-caret-down"></i>
                         </a>
                     </div>
@@ -109,13 +109,13 @@
             TAGS: '标签',
             UNTITLED: '(未命名)',
         },
-        ROOT_URL: '/blog/',
-        CONTENT_URL: '/blog/content.json',
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
     };
     window.INSIGHT_CONFIG = INSIGHT_CONFIG;
 })(window);
 </script>
-<script src="/blog/js/insight.js"></script>
+<script src="/js/insight.js"></script>
 
 </div>
         </div>
@@ -124,15 +124,15 @@
         <table class="menu outer">
             <tr>
                 
-                    <td><a class="main-nav-link" href="/blog/.">主页</a></td>
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
                 
-                    <td><a class="main-nav-link" href="/blog/categories">分类</a></td>
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
                 
-                    <td><a class="main-nav-link" href="/blog/archives">归档</a></td>
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
                 
-                    <td><a class="main-nav-link" href="/blog/books">书单</a></td>
+                    <td><a class="main-nav-link" href="/books">书单</a></td>
                 
-                    <td><a class="main-nav-link" href="/blog/about">关于</a></td>
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
                 
                 <td>
                     
@@ -153,7 +153,7 @@
 <aside id="profile">
     <div class="inner profile-inner">
         <div class="base-info profile-block">
-            <img id="avatar" src="/blog/img/logo.jpg" />
+            <img id="avatar" src="/img/logo.jpg" />
             <h2 id="name">我在万达摆地摊</h2>
             <h3 id="title">Java Developer</h3>
             <span id="location"><i class="fa fa-map-marker"></i>ShangHai, China</span>
@@ -206,7 +206,7 @@
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/blog/posts/44048/">
+        <a href="/posts/44048/">
             <time datetime="2018-03-06T03:30:29.000Z" itemprop="datePublished">2018-03-06</time>
         </a>
     </div>
@@ -215,13 +215,13 @@
                         
     <div class="article-category">
     	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/blog/categories/Java并发/">Java并发</a>
+        <a class="article-category-link" href="/categories/Java并发/">Java并发</a>
     </div>
 
                         
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/blog/tags/Java并发/">Java并发</a>
+        <a class="tag-link" href="/tags/Java并发/">Java并发</a>
     </div>
 
                     </div>
@@ -327,7 +327,7 @@
 
             
                 <div class="article-copyright">
-                    <p>本文首发于<a href="http://satra.gitee.io/blog/posts/44048/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
+                    <p>本文首发于<a href="http://satra.tk/posts/44048/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
                 </div>
             
         
@@ -348,7 +348,7 @@
         
 <nav id="article-nav">
     
-        <a href="/blog/posts/61974/" id="article-nav-newer" class="article-nav-link-wrap">
+        <a href="/posts/61974/" id="article-nav-newer" class="article-nav-link-wrap">
             <strong class="article-nav-caption">上一篇</strong>
             <div class="article-nav-title">
                 
@@ -358,7 +358,7 @@
         </a>
     
     
-        <a href="/blog/posts/48867/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/posts/48867/" id="article-nav-older" class="article-nav-link-wrap">
             <strong class="article-nav-caption">下一篇</strong>
             <div class="article-nav-title">Java并发之ThreadLocal源码分析</div>
         </a>
@@ -387,8 +387,8 @@
                     <li>
                         
                         <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/blog/categories/spring/">spring</a></p>
-                            <p class="item-title"><a href="/blog/posts/59179/" class="title">spring context源码分析</a></p>
+                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/posts/59179/" class="title">spring context源码分析</a></p>
                             <p class="item-date"><time datetime="2018-06-06T15:19:43.000Z" itemprop="datePublished">2018-06-06</time></p>
                         </div>
                     </li>
@@ -396,8 +396,8 @@
                     <li>
                         
                         <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/blog/categories/spring/">spring</a></p>
-                            <p class="item-title"><a href="/blog/posts/46171/" class="title">spring aop源码分析</a></p>
+                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/posts/46171/" class="title">spring aop源码分析</a></p>
                             <p class="item-date"><time datetime="2018-06-06T04:08:31.000Z" itemprop="datePublished">2018-06-06</time></p>
                         </div>
                     </li>
@@ -405,8 +405,8 @@
                     <li>
                         
                         <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/blog/categories/spring/">spring</a></p>
-                            <p class="item-title"><a href="/blog/posts/60270/" class="title">spring core源码分析</a></p>
+                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/posts/60270/" class="title">spring core源码分析</a></p>
                             <p class="item-date"><time datetime="2018-06-06T03:50:05.000Z" itemprop="datePublished">2018-06-06</time></p>
                         </div>
                     </li>
@@ -414,8 +414,8 @@
                     <li>
                         
                         <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/blog/categories/Java/">Java</a></p>
-                            <p class="item-title"><a href="/blog/posts/6839/" class="title">JDK动态代理的实现</a></p>
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java/">Java</a></p>
+                            <p class="item-title"><a href="/posts/6839/" class="title">JDK动态代理的实现</a></p>
                             <p class="item-date"><time datetime="2018-04-13T08:02:31.000Z" itemprop="datePublished">2018-04-13</time></p>
                         </div>
                     </li>
@@ -423,8 +423,8 @@
                     <li>
                         
                         <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/blog/categories/Java容器/">Java容器</a></p>
-                            <p class="item-title"><a href="/blog/posts/53527/" class="title">Java容器源码分析之HashMap与HashSet</a></p>
+                            <p class="item-category"><a class="article-category-link" href="/categories/Java容器/">Java容器</a></p>
+                            <p class="item-title"><a href="/posts/53527/" class="title">Java容器源码分析之HashMap与HashSet</a></p>
                             <p class="item-date"><time datetime="2018-04-07T05:00:57.000Z" itemprop="datePublished">2018-04-07</time></p>
                         </div>
                     </li>
@@ -438,7 +438,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">分类</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/Java/">Java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/Java容器/">Java容器</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/Java并发/">Java并发</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/Java虚拟机/">Java虚拟机</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/spring/">spring</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/数据分析/">数据分析</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/数据结构与算法/">数据结构与算法</a><span class="category-list-count">2</span></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java容器/">Java容器</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发/">Java并发</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java虚拟机/">Java虚拟机</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据分析/">数据分析</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据结构与算法/">数据结构与算法</a><span class="category-list-count">2</span></li></ul>
         </div>
     </div>
 
@@ -447,7 +447,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">归档</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/06/">六月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/04/">四月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/03/">三月 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/02/">二月 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/01/">一月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -456,7 +456,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">标签</h3>
         <div class="widget">
-            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Java容器/">Java容器</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Java并发/">Java并发</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Java虚拟机/">Java虚拟机</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/spring/">spring</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/数据分析/">数据分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/数据结构与算法/">数据结构与算法</a><span class="tag-list-count">2</span></li></ul>
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java容器/">Java容器</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java并发/">Java并发</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java虚拟机/">Java虚拟机</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据分析/">数据分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构与算法/">数据结构与算法</a><span class="tag-list-count">2</span></li></ul>
         </div>
     </div>
 
@@ -465,7 +465,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">标签云</h3>
         <div class="widget tagcloud">
-            <a href="/blog/tags/Java/" style="font-size: 10px;">Java</a> <a href="/blog/tags/Java容器/" style="font-size: 14px;">Java容器</a> <a href="/blog/tags/Java并发/" style="font-size: 20px;">Java并发</a> <a href="/blog/tags/Java虚拟机/" style="font-size: 18px;">Java虚拟机</a> <a href="/blog/tags/spring/" style="font-size: 16px;">spring</a> <a href="/blog/tags/数据分析/" style="font-size: 10px;">数据分析</a> <a href="/blog/tags/数据结构与算法/" style="font-size: 12px;">数据结构与算法</a>
+            <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java容器/" style="font-size: 14px;">Java容器</a> <a href="/tags/Java并发/" style="font-size: 20px;">Java并发</a> <a href="/tags/Java虚拟机/" style="font-size: 18px;">Java虚拟机</a> <a href="/tags/spring/" style="font-size: 16px;">spring</a> <a href="/tags/数据分析/" style="font-size: 10px;">数据分析</a> <a href="/tags/数据结构与算法/" style="font-size: 12px;">数据结构与算法</a>
         </div>
     </div>
 
@@ -502,25 +502,25 @@
 
 
     
-        <script src="/blog/libs/lightgallery/js/lightgallery.min.js"></script>
-        <script src="/blog/libs/lightgallery/js/lg-thumbnail.min.js"></script>
-        <script src="/blog/libs/lightgallery/js/lg-pager.min.js"></script>
-        <script src="/blog/libs/lightgallery/js/lg-autoplay.min.js"></script>
-        <script src="/blog/libs/lightgallery/js/lg-fullscreen.min.js"></script>
-        <script src="/blog/libs/lightgallery/js/lg-zoom.min.js"></script>
-        <script src="/blog/libs/lightgallery/js/lg-hash.min.js"></script>
-        <script src="/blog/libs/lightgallery/js/lg-share.min.js"></script>
-        <script src="/blog/libs/lightgallery/js/lg-video.min.js"></script>
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
     
     
-        <script src="/blog/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
     
     
 
 
 
 <!-- Custom Scripts -->
-<script src="/blog/js/main.js"></script>
+<script src="/js/main.js"></script>
 
     </div>
 </body>
