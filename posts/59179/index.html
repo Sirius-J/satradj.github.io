@@ -9,61 +9,61 @@
 <meta name="keywords" content="spring">
 <meta property="og:type" content="article">
 <meta property="og:title" content="spring context源码分析">
-<meta property="og:url" content="https://satradj.github.io/posts/59179/index.html">
+<meta property="og:url" content="http://satra.gitee.io/blog/posts/59179/index.html">
 <meta property="og:site_name" content="我在万达摆地摊&#39;s blog">
 <meta property="og:description" content="开头入口方法在BeanDefinitionParserDelegate.parseCustomElement： 1return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/Comparator.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/ContextAnnotationAutowireCandidateResolver.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/ConfigurationClassPostProcessor.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/AutowiredAnnotationBeanPostProcessor.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/CommonAnnotationBeanPostProcessor.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/EventListenerMethodProcessor.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/DefaultEventListenerFactory.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/CompositeComponentDefinition.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/context_annotation_stack.png">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/ImportAwareBeanPostProcessor.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/BeanNameGenerator.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/required_test.png">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/ScopeMetadataResolver.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/MetadataReader.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/AnnotationMetadataReadingVisitor.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/ScannedGenericBeanDefinition.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/PropertyOverrideBeanDefinitionParser.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/PropertyOverrideConfigurer.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/PropertySourcesPlaceholderConfigurer.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/LoadTimeWeaver.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/AspectJWeavingEnabler.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/AnnotationBeanConfigurerAspect.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/LoadTimeWeaverAwareProcessor.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/ClassPreProcessorAgentAdapter.jpg">
-<meta property="og:image" content="https://satradj.github.io/posts/59179/aop_xml_parse.png">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/Comparator.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/ContextAnnotationAutowireCandidateResolver.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/ConfigurationClassPostProcessor.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/AutowiredAnnotationBeanPostProcessor.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/CommonAnnotationBeanPostProcessor.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/EventListenerMethodProcessor.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/DefaultEventListenerFactory.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/CompositeComponentDefinition.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/context_annotation_stack.png">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/ImportAwareBeanPostProcessor.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/BeanNameGenerator.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/required_test.png">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/ScopeMetadataResolver.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/MetadataReader.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/AnnotationMetadataReadingVisitor.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/ScannedGenericBeanDefinition.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/PropertyOverrideBeanDefinitionParser.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/PropertyOverrideConfigurer.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/PropertySourcesPlaceholderConfigurer.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/LoadTimeWeaver.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/AspectJWeavingEnabler.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/AnnotationBeanConfigurerAspect.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/LoadTimeWeaverAwareProcessor.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/ClassPreProcessorAgentAdapter.jpg">
+<meta property="og:image" content="http://satra.gitee.io/blog/posts/59179/aop_xml_parse.png">
 <meta property="og:updated_time" content="2018-06-06T15:28:10.013Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring context源码分析">
 <meta name="twitter:description" content="开头入口方法在BeanDefinitionParserDelegate.parseCustomElement： 1return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));">
-<meta name="twitter:image" content="https://satradj.github.io/posts/59179/Comparator.jpg">
+<meta name="twitter:image" content="http://satra.gitee.io/blog/posts/59179/Comparator.jpg">
     
 
     
 
     
-        <link rel="icon" href="/img/logo.jpg" />
+        <link rel="icon" href="/blog/img/logo.jpg" />
     
 
-    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/libs/open-sans/styles.css">
-    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+    <link rel="stylesheet" href="/blog/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/blog/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/blog/libs/source-code-pro/styles.css">
 
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/blog/css/style.css">
 
-    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/blog/libs/jquery/2.1.3/jquery.min.js"></script>
     
     
-        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+        <link rel="stylesheet" href="/blog/libs/lightgallery/css/lightgallery.min.css">
     
     
-        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+        <link rel="stylesheet" href="/blog/libs/justified-gallery/justifiedGallery.min.css">
     
     
     
@@ -77,21 +77,21 @@
         <header id="header">
     <div id="header-main" class="header-inner">
         <div class="outer">
-            <a href="/" id="logo">
+            <a href="/blog/" id="logo">
                 
                 <span class="site-title">我在万达摆地摊&#39;s blog</span>
             </a>
             <nav id="main-nav">
                 
-                    <a class="main-nav-link" href="/.">主页</a>
+                    <a class="main-nav-link" href="/blog/.">主页</a>
                 
-                    <a class="main-nav-link" href="/categories">分类</a>
+                    <a class="main-nav-link" href="/blog/categories">分类</a>
                 
-                    <a class="main-nav-link" href="/archives">归档</a>
+                    <a class="main-nav-link" href="/blog/archives">归档</a>
                 
-                    <a class="main-nav-link" href="/books">书单</a>
+                    <a class="main-nav-link" href="/blog/books">书单</a>
                 
-                    <a class="main-nav-link" href="/about">关于</a>
+                    <a class="main-nav-link" href="/blog/about">关于</a>
                 
             </nav>
             
@@ -99,7 +99,7 @@
                 <nav id="sub-nav">
                     <div class="profile" id="profile-nav">
                         <a id="profile-anchor" href="javascript:;">
-                            <img class="avatar" src="/img/logo.jpg" />
+                            <img class="avatar" src="/blog/img/logo.jpg" />
                             <i class="fa fa-caret-down"></i>
                         </a>
                     </div>
@@ -133,13 +133,13 @@
             TAGS: '标签',
             UNTITLED: '(未命名)',
         },
-        ROOT_URL: '/',
-        CONTENT_URL: '/content.json',
+        ROOT_URL: '/blog/',
+        CONTENT_URL: '/blog/content.json',
     };
     window.INSIGHT_CONFIG = INSIGHT_CONFIG;
 })(window);
 </script>
-<script src="/js/insight.js"></script>
+<script src="/blog/js/insight.js"></script>
 
 </div>
         </div>
@@ -148,15 +148,15 @@
         <table class="menu outer">
             <tr>
                 
-                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                    <td><a class="main-nav-link" href="/blog/.">主页</a></td>
                 
-                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                    <td><a class="main-nav-link" href="/blog/categories">分类</a></td>
                 
-                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                    <td><a class="main-nav-link" href="/blog/archives">归档</a></td>
                 
-                    <td><a class="main-nav-link" href="/books">书单</a></td>
+                    <td><a class="main-nav-link" href="/blog/books">书单</a></td>
                 
-                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                    <td><a class="main-nav-link" href="/blog/about">关于</a></td>
                 
                 <td>
                     
@@ -177,7 +177,7 @@
 <aside id="profile">
     <div class="inner profile-inner">
         <div class="base-info profile-block">
-            <img id="avatar" src="/img/logo.jpg" />
+            <img id="avatar" src="/blog/img/logo.jpg" />
             <h2 id="name">我在万达摆地摊</h2>
             <h3 id="title">Java Developer</h3>
             <span id="location"><i class="fa fa-map-marker"></i>ShangHai, China</span>
@@ -230,7 +230,7 @@
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/posts/59179/">
+        <a href="/blog/posts/59179/">
             <time datetime="2018-06-06T15:19:43.000Z" itemprop="datePublished">2018-06-06</time>
         </a>
     </div>
@@ -239,13 +239,13 @@
                         
     <div class="article-category">
     	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/spring/">spring</a>
+        <a class="article-category-link" href="/blog/categories/spring/">spring</a>
     </div>
 
                         
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/spring/">spring</a>
+        <a class="tag-link" href="/blog/tags/spring/">spring</a>
     </div>
 
                     </div>
@@ -677,14 +677,14 @@
 <h6 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h6><p>入口方法在ClassLoaderWeavingAdaptor.registerDefinitions:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">registerDefinitions</span><span class="params">(<span class="keyword">final</span> BcelWeaver weaver, <span class="keyword">final</span> ClassLoader loader, List&lt;Definition&gt; definitions)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//对应&lt;weaver options="-verbose"&gt;</span></span><br><span class="line">    registerOptions(weaver, loader, definitions);</span><br><span class="line">    <span class="comment">//对应&lt;exclude&gt;标签</span></span><br><span class="line">    registerAspectExclude(weaver, loader, definitions);</span><br><span class="line">    <span class="comment">//对应&lt;include&gt;标签</span></span><br><span class="line">    registerAspectInclude(weaver, loader, definitions);</span><br><span class="line">    <span class="comment">// &lt;aspect&gt;</span></span><br><span class="line">    success = registerAspects(weaver, loader, definitions);</span><br><span class="line">    registerIncludeExclude(weaver, loader, definitions);</span><br><span class="line">    <span class="comment">//对应&lt;dump&gt;标签</span></span><br><span class="line">    registerDump(weaver, loader, definitions);</span><br><span class="line">    <span class="comment">//忽略返回</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h4><p>Spring将切面以编译过的Aspectj语言形式定义，不过也可以用原生java类。spring-aspectj包定义的是供各个模块进行LTW的切面。Aspectj部分不再继续向下深入探究。</p>
-<h1 id="申明"><a href="#申明" class="headerlink" title="申明"></a>申明</h1><p>本文转载自seaswalker的<a href="https://github.com/seaswalker/Spring" target="_blank" rel="noopener">github</a>，<a href="https://github.com/seaswalker/Spring/issues/1" target="_blank" rel="noopener">转载授权</a>，由<a href="https://satradj.github.io/">我在万达摆地摊</a>整理发布。</p>
+<h1 id="申明"><a href="#申明" class="headerlink" title="申明"></a>申明</h1><p>本文转载自seaswalker的<a href="https://github.com/seaswalker/Spring" target="_blank" rel="noopener">github</a>，<a href="https://github.com/seaswalker/Spring/issues/1" target="_blank" rel="noopener">转载授权</a>，由<a href="https://satradj.github.io/" target="_blank" rel="noopener">我在万达摆地摊</a>整理发布。</p>
 
             
             
 
             
                 <div class="article-copyright">
-                    <p>本文首发于<a href="https://satradj.github.io/posts/59179/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
+                    <p>本文首发于<a href="http://satra.gitee.io/blog/posts/59179/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
                 </div>
             
         
@@ -706,7 +706,7 @@
 <nav id="article-nav">
     
     
-        <a href="/posts/46171/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/blog/posts/46171/" id="article-nav-older" class="article-nav-link-wrap">
             <strong class="article-nav-caption">下一篇</strong>
             <div class="article-nav-title">spring aop源码分析</div>
         </a>
@@ -735,8 +735,8 @@
                     <li>
                         
                         <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
-                            <p class="item-title"><a href="/posts/59179/" class="title">spring context源码分析</a></p>
+                            <p class="item-category"><a class="article-category-link" href="/blog/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/blog/posts/59179/" class="title">spring context源码分析</a></p>
                             <p class="item-date"><time datetime="2018-06-06T15:19:43.000Z" itemprop="datePublished">2018-06-06</time></p>
                         </div>
                     </li>
@@ -744,8 +744,8 @@
                     <li>
                         
                         <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
-                            <p class="item-title"><a href="/posts/46171/" class="title">spring aop源码分析</a></p>
+                            <p class="item-category"><a class="article-category-link" href="/blog/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/blog/posts/46171/" class="title">spring aop源码分析</a></p>
                             <p class="item-date"><time datetime="2018-06-06T04:08:31.000Z" itemprop="datePublished">2018-06-06</time></p>
                         </div>
                     </li>
@@ -753,8 +753,8 @@
                     <li>
                         
                         <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
-                            <p class="item-title"><a href="/posts/60270/" class="title">spring core源码分析</a></p>
+                            <p class="item-category"><a class="article-category-link" href="/blog/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/blog/posts/60270/" class="title">spring core源码分析</a></p>
                             <p class="item-date"><time datetime="2018-06-06T03:50:05.000Z" itemprop="datePublished">2018-06-06</time></p>
                         </div>
                     </li>
@@ -762,8 +762,8 @@
                     <li>
                         
                         <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/Java/">Java</a></p>
-                            <p class="item-title"><a href="/posts/6839/" class="title">JDK动态代理的实现</a></p>
+                            <p class="item-category"><a class="article-category-link" href="/blog/categories/Java/">Java</a></p>
+                            <p class="item-title"><a href="/blog/posts/6839/" class="title">JDK动态代理的实现</a></p>
                             <p class="item-date"><time datetime="2018-04-13T08:02:31.000Z" itemprop="datePublished">2018-04-13</time></p>
                         </div>
                     </li>
@@ -771,8 +771,8 @@
                     <li>
                         
                         <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/Java容器/">Java容器</a></p>
-                            <p class="item-title"><a href="/posts/53527/" class="title">Java容器源码分析之HashMap与HashSet</a></p>
+                            <p class="item-category"><a class="article-category-link" href="/blog/categories/Java容器/">Java容器</a></p>
+                            <p class="item-title"><a href="/blog/posts/53527/" class="title">Java容器源码分析之HashMap与HashSet</a></p>
                             <p class="item-date"><time datetime="2018-04-07T05:00:57.000Z" itemprop="datePublished">2018-04-07</time></p>
                         </div>
                     </li>
@@ -786,7 +786,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">分类</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java容器/">Java容器</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发/">Java并发</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java虚拟机/">Java虚拟机</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据分析/">数据分析</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据结构与算法/">数据结构与算法</a><span class="category-list-count">2</span></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/Java/">Java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/Java容器/">Java容器</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/Java并发/">Java并发</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/Java虚拟机/">Java虚拟机</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/spring/">spring</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/数据分析/">数据分析</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/数据结构与算法/">数据结构与算法</a><span class="category-list-count">2</span></li></ul>
         </div>
     </div>
 
@@ -795,7 +795,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">归档</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/06/">六月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/04/">四月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/03/">三月 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/02/">二月 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2018/01/">一月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -804,7 +804,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">标签</h3>
         <div class="widget">
-            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java容器/">Java容器</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java并发/">Java并发</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java虚拟机/">Java虚拟机</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据分析/">数据分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构与算法/">数据结构与算法</a><span class="tag-list-count">2</span></li></ul>
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Java容器/">Java容器</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Java并发/">Java并发</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Java虚拟机/">Java虚拟机</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/spring/">spring</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/数据分析/">数据分析</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/数据结构与算法/">数据结构与算法</a><span class="tag-list-count">2</span></li></ul>
         </div>
     </div>
 
@@ -813,7 +813,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">标签云</h3>
         <div class="widget tagcloud">
-            <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java容器/" style="font-size: 14px;">Java容器</a> <a href="/tags/Java并发/" style="font-size: 20px;">Java并发</a> <a href="/tags/Java虚拟机/" style="font-size: 18px;">Java虚拟机</a> <a href="/tags/spring/" style="font-size: 16px;">spring</a> <a href="/tags/数据分析/" style="font-size: 10px;">数据分析</a> <a href="/tags/数据结构与算法/" style="font-size: 12px;">数据结构与算法</a>
+            <a href="/blog/tags/Java/" style="font-size: 10px;">Java</a> <a href="/blog/tags/Java容器/" style="font-size: 14px;">Java容器</a> <a href="/blog/tags/Java并发/" style="font-size: 20px;">Java并发</a> <a href="/blog/tags/Java虚拟机/" style="font-size: 18px;">Java虚拟机</a> <a href="/blog/tags/spring/" style="font-size: 16px;">spring</a> <a href="/blog/tags/数据分析/" style="font-size: 10px;">数据分析</a> <a href="/blog/tags/数据结构与算法/" style="font-size: 12px;">数据结构与算法</a>
         </div>
     </div>
 
@@ -850,25 +850,25 @@
 
 
     
-        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
-        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
-        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
-        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
-        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
-        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
-        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
-        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
-        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/blog/libs/lightgallery/js/lg-video.min.js"></script>
     
     
-        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+        <script src="/blog/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
     
     
 
 
 
 <!-- Custom Scripts -->
-<script src="/js/main.js"></script>
+<script src="/blog/js/main.js"></script>
 
     </div>
 </body>
