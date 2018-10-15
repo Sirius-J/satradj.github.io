@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>分析了我跟基友的10894条微信聊天记录，发现我跟基友才是真爱 | 我在万达摆地摊&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="微信聊天记录获取要分析微信聊天记录，首先要获取到微信存储在手机上的聊天记录，我这里是通过备份后拿到微信的聊天记录的。其他的方法大家可以百度找一下。 首先打开itunes，在备份里面选择备份到本地电脑，千万不要勾选加密备份。">
+<meta name="keywords" content="数据分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分析了我跟基友的10894条微信聊天记录，发现我跟基友才是真爱">
+<meta property="og:url" content="https://satra.tk/posts/25057/index.html">
+<meta property="og:site_name" content="我在万达摆地摊&#39;s blog">
+<meta property="og:description" content="微信聊天记录获取要分析微信聊天记录，首先要获取到微信存储在手机上的聊天记录，我这里是通过备份后拿到微信的聊天记录的。其他的方法大家可以百度找一下。 首先打开itunes，在备份里面选择备份到本地电脑，千万不要勾选加密备份。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://satra.tk/posts/25057/备份.png">
+<meta property="og:image" content="https://satra.tk/posts/25057/itools打开备份管理.png">
+<meta property="og:image" content="https://satra.tk/posts/25057/获取聊天记录数据库.png">
+<meta property="og:image" content="https://satra.tk/posts/25057/聊天记录表.png">
+<meta property="og:image" content="https://satra.tk/posts/25057/前五条聊天记录.png">
+<meta property="og:image" content="https://satra.tk/posts/25057/聊天记录条数.png">
+<meta property="og:image" content="https://satra.tk/posts/25057/消息接收和发送数.png">
+<meta property="og:image" content="https://satra.tk/posts/25057/消息发送数直方图.png">
+<meta property="og:image" content="https://satra.tk/posts/25057/消息类型.png">
+<meta property="og:image" content="https://satra.tk/posts/25057/消息类型直方图.png">
+<meta property="og:image" content="https://satra.tk/posts/25057/词云代码.png">
+<meta property="og:image" content="https://satra.tk/posts/25057/词云.png">
+<meta property="og:updated_time" content="2018-10-15T06:13:07.080Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分析了我跟基友的10894条微信聊天记录，发现我跟基友才是真爱">
+<meta name="twitter:description" content="微信聊天记录获取要分析微信聊天记录，首先要获取到微信存储在手机上的聊天记录，我这里是通过备份后拿到微信的聊天记录的。其他的方法大家可以百度找一下。 首先打开itunes，在备份里面选择备份到本地电脑，千万不要勾选加密备份。">
+<meta name="twitter:image" content="https://satra.tk/posts/25057/备份.png">
+    
+
+    
+
+    
+        <link rel="icon" href="/img/logo.jpg" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-127037164-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                
+                <span class="site-title">我在万达摆地摊&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/books">书单</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/img/logo.jpg" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/books">书单</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/img/logo.jpg" />
+            <h2 id="name">我在万达摆地摊</h2>
+            <h3 id="title">Java Developer</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>ShangHai, China</span>
+            <a id="follow" target="_blank" href="https://github.com/satradj/">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                33
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                7
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/satradj/" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-分析了我跟基友的10894条微信聊天记录，发现我跟基友才是真爱" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            分析了我跟基友的10894条微信聊天记录，发现我跟基友才是真爱
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/posts/25057/">
+            <time datetime="2018-10-15T05:07:44.000Z" itemprop="datePublished">2018-10-15</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/数据分析/">数据分析</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/数据分析/">数据分析</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h2 id="微信聊天记录获取"><a href="#微信聊天记录获取" class="headerlink" title="微信聊天记录获取"></a>微信聊天记录获取</h2><p>要分析微信聊天记录，首先要获取到微信存储在手机上的聊天记录，我这里是通过备份后拿到微信的聊天记录的。其他的方法大家可以百度找一下。</p>
+<p>首先打开itunes，在<code>备份</code>里面选择<code>备份到本地电脑</code>，千万不要勾选加密备份。</p>
+<a id="more"></a>
+<p><img src="备份.png" alt="备份"></p>
+<p>因为我们的备份是备份的整个手机的数据所以我们需要借助itools这个管理工具来从备份中获取到微信聊天记录。下载安装itools后，在<code>更多</code>里面选择<code>iTunes备份管理</code>，打开后选择你刚刚在itunes里面的备份。</p>
+<p><img src="itools打开备份管理.png" alt="itools备份管理"></p>
+<p>然后打开路径<code>/var/mobile/Applications/com.tencent.xin/Documents/你的微信id/DB</code>，选择目录里面的<code>MM.sqlite</code>导出，这个MM.sqlite就是你微信聊天记录的数据库文件了。</p>
+<p><img src="获取聊天记录数据库.png" alt="获取聊天记录数据库"></p>
+<p>用数据库管理工具打开是这样滴：</p>
+<p><img src="聊天记录表.png" alt="聊天记录表"></p>
+<p>这里面的表大部分是你和好友的微信聊天记录，一个好友一张表，接下来，找到和基友的聊天记录导出成Excel文件，接下来就开始分析和基友的聊天记录了。</p>
+<h2 id="聊天记录分析"><a href="#聊天记录分析" class="headerlink" title="聊天记录分析"></a>聊天记录分析</h2><p>首先导入我们分析所必要的库：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> jieba</span><br><span class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</span><br></pre></td></tr></table></figure>
+<p>导入聊天记录文件</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df = pd.read_csv(<span class="string">r'D:\data\a.csv'</span>)</span><br></pre></td></tr></table></figure>
+<p>查看一下前面五条聊天记录：</p>
+<p><img src="前五条聊天记录.png" alt="前五条聊天记录"></p>
+<p>解释下这里字段的意思：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CreateTime</td>
+<td>这条聊天记录创建的时间</td>
+</tr>
+<tr>
+<td>Des</td>
+<td>我是否为消息的接收方，也就是说0是我发送的，1是好友发送的</td>
+</tr>
+<tr>
+<td>ImgStatus</td>
+<td>标记着头像的当前状态，猜测是为了更新头像用</td>
+</tr>
+<tr>
+<td>MesLocalID</td>
+<td>本地消息ID</td>
+</tr>
+<tr>
+<td>Message</td>
+<td>消息内容</td>
+</tr>
+<tr>
+<td>MesSvrID</td>
+<td>服务端的消息ID</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>消息状态，比如发送失败，成功，正在发送</td>
+</tr>
+<tr>
+<td>TableVer</td>
+<td>表的版本，应该是数据表升级使用</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>消息类型，10000: 系统消息，34: 语音，47: 表情，62: 小视频，50: 视频/语音通话，3: 图片，48: 位置， 42: 名片，49: 链接</td>
+</tr>
+</tbody>
+</table>
+<p>查看下共有多少条聊天记录：</p>
+<p><img src="聊天记录条数.png" alt="聊天记录条数"></p>
+<p>一起10894条聊天记录</p>
+<p>接着分析下我给基友发送的消息数量和基友给我发送的消息数量：</p>
+<p><img src="消息接收和发送数.png" alt="消息接收和发送数"></p>
+<p>我给基友发送了6493条消息，基友给我发送了4401条数据。</p>
+<p>画成直方图是这样的：</p>
+<p><img src="消息发送数直方图.png" alt="消息发送数直方图"></p>
+<p>然后看一下和基友的消息类型：</p>
+<p><img src="消息类型.png" alt="消息类型"></p>
+<p><img src="消息类型直方图.png" alt="消息类型直方图"></p>
+<p>占了最多的是文字信息，共有10167条，其次是图片，有417条(斗图还不够多啊)</p>
+<p>最后把我跟基友的聊天记录分词后生成一个词云如下：<br><img src="词云代码.png" alt="词云代码"><br><img src="词云.png" alt="词云"></p>
+
+            
+            
+
+            
+                <div class="article-copyright">
+                    <p>本文首发于<a href="https://satra.tk/posts/25057/index.html">我在万达摆地摊&#39;s blog</a>，转载请注明来源</p>
+                </div>
+            
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/posts/15220/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">spring mvc源码分析</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="no-thumbnail">
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/数据分析/">数据分析</a></p>
+                            <p class="item-title"><a href="/posts/25057/" class="title">分析了我跟基友的10894条微信聊天记录，发现我跟基友才是真爱</a></p>
+                            <p class="item-date"><time datetime="2018-10-15T05:07:44.000Z" itemprop="datePublished">2018-10-15</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/posts/15220/" class="title">spring mvc源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-10-05T07:03:57.000Z" itemprop="datePublished">2018-10-05</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/posts/3531/" class="title">spring transaction源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-10-05T06:57:50.000Z" itemprop="datePublished">2018-10-05</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/posts/24249/" class="title">spring task源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-10-05T06:40:31.000Z" itemprop="datePublished">2018-10-05</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/spring/">spring</a></p>
+                            <p class="item-title"><a href="/posts/59179/" class="title">spring context源码分析</a></p>
+                            <p class="item-date"><time datetime="2018-06-06T15:19:43.000Z" itemprop="datePublished">2018-06-06</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java容器/">Java容器</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java并发/">Java并发</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java虚拟机/">Java虚拟机</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/spring/">spring</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据分析/">数据分析</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据结构与算法/">数据结构与算法</a><span class="category-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java容器/">Java容器</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java并发/">Java并发</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java虚拟机/">Java虚拟机</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spring/">spring</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据分析/">数据分析</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构与算法/">数据结构与算法</a><span class="tag-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Java容器/" style="font-size: 14px;">Java容器</a> <a href="/tags/Java并发/" style="font-size: 20px;">Java并发</a> <a href="/tags/Java虚拟机/" style="font-size: 16px;">Java虚拟机</a> <a href="/tags/spring/" style="font-size: 18px;">spring</a> <a href="/tags/数据分析/" style="font-size: 12px;">数据分析</a> <a href="/tags/数据结构与算法/" style="font-size: 12px;">数据结构与算法</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://woquanke.com/">全科</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 我在万达摆地摊
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
